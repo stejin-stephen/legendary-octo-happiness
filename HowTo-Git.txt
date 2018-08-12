@@ -1,0 +1,45 @@
+git --version
+
+git config --global user.name "Stejin Stephen"
+
+git config --global user.name "stejinstephen@gmail.com"
+
+git config --list
+
+To create a git repo, cd into the directory and 
+git init
+
+Create readme file
+echo "Enter you content here" >> README.md
+
+Add files to staging area
+git add .
+
+Commit added files
+git commit -m "Enter your commit message"
+
+Point our local repo to github repo for linking
+git remote add origin 'github repo https link'
+
+To push changes to github repo
+git push -u origin master
+
+Open git-doc/git.html
+git help git
+
+Open git-doc/giteveryday.html
+git help everyday
+
+inside project folder:
+git status
+git status -s
+
+Show changes b/w last commit & staged version
+git diff --staged
+
+bash commands:
+ls
+ls 'folder name'
+
+touch command is the easiest way to create new, empty files.
+touch 'folderpath/filename.extension'gi

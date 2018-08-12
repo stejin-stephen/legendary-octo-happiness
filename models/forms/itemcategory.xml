@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form>
+  <fieldset>
+    <field
+        name="id"
+        type="text"
+        readonly="true"
+        class="readonly"
+        default="0"
+        description="JGLOBAL_FIELD_ID_DESC"
+    />
+    
+    <field
+        name="parent_id"
+        type="sql"
+        default="0"
+        label="Parent"
+        query="SELECT id, title FROM #__tools_categories WHERE parent_id = 0"
+        key_field="id"
+        value_field="title">
+      <option value="0">No parent</option>
+    </field>
+    
+    <field
+        name="catid"
+        type="hidden"
+        label="COM_TOOLS_FORM_LBL_ITEM_CATID"
+        description="COM_TOOLS_FORM_DESC_ITEM_CATID"
+        default="0"
+    />
+    
+    <field
+        name="title"
+        filter="safehtml"
+        type="text"
+        required="true"
+        label="COM_TOOLS_FORM_LBL_ITEM_TITLE"
+        description="COM_TOOLS_FORM_DESC_ITEM_TITLE"
+        hint="COM_TOOLS_FORM_LBL_ITEM_TITLE"
+    />
+    
+    <field
+        name="alias"
+        type="text"
+        class="inputbox"
+        generator="title"
+        label="COM_TOOLS_FORM_LBL_ITEM_ALIAS"
+        description="COM_TOOLS_FORM_DESC_ITEM_ALIAS"
+        hint="COM_TOOLS_FORM_LBL_ITEM_ALIAS"
+    />
+    
+    <field
+        name="description"
+        editor="|"
+        buttons="true"
+        filter="JComponentHelper::filterText"
+        type="editor"
+        required="true"
+        label="COM_TOOLS_FORM_LBL_ITEM_DESCRIPTION"
+        description="COM_TOOLS_FORM_DESC_ITEM_DESCRIPTION"
+        hint="COM_TOOLS_FORM_LBL_ITEM_DESCRIPTION"
+    />
+    
+    <field name="ordering"/>
+    
+    <field
+        name="password"
+        filter="safehtml"
+        type="text"
+        required="true"
+        label="Password"
+        class="inputbox"
+    />
+    
+    <field
+        name="emails"
+        filter="safehtml"
+        type="textarea"
+        required="true"
+        label="Access (emails)"
+        class="input-xxlarge"
+        rows="10"
+    />
+    
+    <field
+        name="state"
+        default="1"
+        type="list"
+        label="JSTATUS"
+        description="JFIELD_PUBLISHED_DESC"
+        class="chzn-color-state"
+        size="1">
+      <option value="1">JPUBLISHED</option>
+      <option value="0">JUNPUBLISHED</option>
+      <option value="2">JARCHIVED</option>
+      <option value="-2">JTRASHED</option>
+    </field>
+    
+    <field
+        name="access"
+        type="accesslevel"
+        label="COM_TOOLS_FORM_LBL_ITEM_ACCESS"
+        description="COM_TOOLS_FORM_DESC_ITEM_ACCESS"
+        hint="COM_TOOLS_FORM_LBL_ITEM_ACCESS"
+    />
+    
+    <field
+        name="checked_out"
+        type="hidden"
+        filter="unset"
+    />
+    
+    <field
+        name="checked_out_time"
+        default="0000-00-00 00:00:00"
+        type="hidden"
+        filter="unset"
+    />
+    
+    <field
+        name="created_by"
+        type="createdby"
+        default="0"
+        label="COM_TOOLS_FORM_LBL_ITEM_CREATED_BY"
+        description="COM_TOOLS_FORM_DESC_ITEM_CREATED_BY"
+        hidden="true"
+        hint="COM_TOOLS_FORM_LBL_ITEM_CREATED_BY"
+    />
+    
+    <field
+        name="created"
+        type="calendar"
+		format="%d/%m/%Y"
+        label="COM_TOOLS_FORM_LBL_ITEM_CREATED"
+        description="COM_TOOLS_FORM_DESC_ITEM_CREATED"
+        hint="COM_TOOLS_FORM_LBL_ITEM_CREATED"
+    />
+    
+    <field
+        name="modified_by"
+        type="modifiedby"
+        default="0"
+        label="COM_TOOLS_FORM_LBL_ITEM_MODIFIED_BY"
+        description="COM_TOOLS_FORM_DESC_ITEM_MODIFIED_BY"
+        hidden="true"
+        hint="COM_TOOLS_FORM_LBL_ITEM_MODIFIED_BY"
+    />
+    
+    <field
+        name="modified"
+        type="timecreated"
+        label="COM_TOOLS_FORM_LBL_ITEM_MODIFIED"
+        description="COM_TOOLS_FORM_DESC_ITEM_MODIFIED"
+        hint="COM_TOOLS_FORM_LBL_ITEM_MODIFIED"
+    />
+    
+    <field
+        name="version_note"
+        type="text"
+        label="JGLOBAL_FIELD_VERSION_NOTE_LABEL"
+        description="JGLOBAL_FIELD_VERSION_NOTE_DESC"
+        class="inputbox"
+        size="45"
+        labelclass="control-label"
+    />
+  </fieldset>
+  
+	<fields name="imageinfo">
+		<fieldset
+			name="image-info"
+			label="COM_TOOLS_IMAGE_FIELDS"
+		>
+			<field
+				name="image"
+                required="true"
+				type="media"
+				preview="tooltip"
+				label="Image"/>
+			<field name="alt"
+				type="text"
+				label="Alt Text"
+				size="30"/>
+		</fieldset>
+	</fields>
+  
+  <fieldset name="accesscontrol">
+    <field
+        name="asset_id"
+        type="hidden"
+        filter="unset"
+    />
+    
+    <field
+        name="rules"
+        type="rules"
+        label="JFIELD_RULES_LABEL"
+        translate_label="false"
+        filter="rules"
+        validate="rules"
+        class="inputbox"
+        component="com_tools"
+        section="item"
+    />
+  </fieldset>
+</form>
