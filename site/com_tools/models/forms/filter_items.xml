@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form>
+    <fields name="filter">
+        <field name="search" type="text" hint="COM_TOOLS_SEARCH_FILTER_SUBMIT"
+               label="COM_USERS_FILTER_SEARCH_DESC"
+               class="js-stools-search-string" />
+
+        <field name="type" label="COM_TOOLS_FORM_LBL_ITEM_TYPE" type="list" onchange="this.form.submit();" default="COM_TOOLS_ITEMS_TYPE_FILTER">
+  <option value="">COM_TOOLS_ITEMS_TYPE_FILTER</option>
+  <option value="1">COM_TOOLS_ITEMS_TYPE_OPTION_1</option>
+  <option value="2">COM_TOOLS_ITEMS_TYPE_OPTION_2</option>
+  <option value="3">COM_TOOLS_ITEMS_TYPE_OPTION_3</option>
+</field>
+
+
+    </fields>
+</form>
