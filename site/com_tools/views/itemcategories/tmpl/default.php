@@ -17,7 +17,7 @@ if (count($page_title_parts)>0) {
 } else {
 	$new_page_title = $page_title_parts;
 }
-var_dump($this->items);
+
 ?>
 
 

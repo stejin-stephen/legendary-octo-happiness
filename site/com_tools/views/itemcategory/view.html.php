@@ -12,6 +12,8 @@ defined('_JEXEC') or die;
 
 jimport('joomla.application.component.view');
 
+require_once(JPATH_ROOT.'/includes/truncatetext.php');
+
 /**
  * View to edit
  *
@@ -44,7 +46,7 @@ class ToolsViewItemCategory extends JViewLegacy
 		$this->state  = $this->get('State');
 		$this->item   = $this->get('Item');
 		$this->params = $app->getParams('com_tools');
-		
+
 		$this->item->tools = self::getTools($this->item->id);
 
 		if (!empty($this->item))
@@ -61,7 +63,7 @@ class ToolsViewItemCategory extends JViewLegacy
 		if(!in_array($this->item->access, $user->getAuthorisedViewLevels())){
                 return JError::raiseError(403, JText::_('JERROR_ALERTNOAUTHOR'));
             }
-        
+
 
 		if ($this->_layout == 'edit')
 		{
@@ -77,20 +79,28 @@ class ToolsViewItemCategory extends JViewLegacy
 
 		parent::display($tpl);
 	}
-	
+
 	public function getTools($id)
 	{
 			$db    = JFactory::getDbo();
 			$query = $db->getQuery(true);
-		
+
 			$query
 				->select('a.*')
 				->from($db->quoteName('#__tools', 'a'))
 				->where('a.tool_catid = '.$id);
-				
+
 			$db->setQuery($query);
-		
-			return $result = $db->loadObjectList();
+
+			$result = $db->loadObjectList();
+
+			foreach ($result as $item) {
+				$item->cat = json_decode($item->image);
+				$item->introtext = truncateHelper::truncate($item->description,100,array('html' => true,'exact' => false, 'ending' => '...'));
+				$item->showtext = $item->type == 3 ? 'Download' : 'View';
+			}
+			//var_dump($result); exit;
+			return $result;
 	}
 
 	/**

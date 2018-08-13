@@ -17,7 +17,7 @@ if (count($page_title_parts)>0) {
 } else {
 	$new_page_title = $page_title_parts;
 }
-
+//var_dump($this->item);
 
 $canEdit = JFactory::getUser()->authorise('core.edit', 'com_tools.' . $this->item->id);
 
@@ -36,10 +36,12 @@ if (!$canEdit && JFactory::getUser()->authorise('core.edit.own', 'com_tools' . $
 	</div>
 </div>
 
-<div class="item_fields">
+<?php echo $this->loadTemplate('items'); ?>
+
+<!-- <div class="item_fields">
 
 	<table class="table">
-		
+
 
 		<tr>
 			<th><?php echo JText::_('COM_TOOLS_FORM_LBL_ITEM_CATID'); ?></th>
@@ -65,8 +67,8 @@ if (!$canEdit && JFactory::getUser()->authorise('core.edit.own', 'com_tools' . $
 			<th><?php echo JText::_('COM_TOOLS_FORM_LBL_ITEM_DOCUMENT'); ?></th>
 			<td>
 			<?php
-			foreach ((array) $this->item->document as $singleFile) : 
-				if (!is_array($singleFile)) : 
+			foreach ((array) $this->item->document as $singleFile) :
+				if (!is_array($singleFile)) :
 					$uploadPath = 'downloads/tools' . DIRECTORY_SEPARATOR . $singleFile;
 					 echo '<a href="' . JRoute::_(JUri::root() . $uploadPath, false) . '" target="_blank">' . $singleFile . '</a> ';
 				endif;
@@ -101,17 +103,11 @@ if (!$canEdit && JFactory::getUser()->authorise('core.edit.own', 'com_tools' . $
 
 	</table>
 
-</div>
-
-<?php if($canEdit && $this->item->checked_out == 0): ?>
-
-	<a class="btn" href="<?php echo JRoute::_('index.php?option=com_tools&task=itemcategory.edit&id='.$this->item->id); ?>"><?php echo JText::_("COM_TOOLS_EDIT_ITEM"); ?></a>
-
-<?php endif; ?>
+</div> -->
 
 <?php if (JFactory::getUser()->authorise('core.delete','com_tools.itemcategory.'.$this->item->id)) : ?>
 
-	<a class="btn btn-danger" href="#deleteModal" role="button" data-toggle="modal">
+	<!-- <a class="btn btn-danger" href="#deleteModal" role="button" data-toggle="modal">
 		<?php echo JText::_("COM_TOOLS_DELETE_ITEM"); ?>
 	</a>
 
@@ -129,6 +125,6 @@ if (!$canEdit && JFactory::getUser()->authorise('core.edit.own', 'com_tools' . $
 				<?php echo JText::_('COM_TOOLS_DELETE_ITEM'); ?>
 			</a>
 		</div>
-	</div>
+	</div> -->
 
 <?php endif; ?>
