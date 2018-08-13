@@ -2,7 +2,7 @@
 /**
  * @version    1.0
  * @package    Com_Tools
- * @author      <https://development.karakas.be/issues/5184>
+ * @author      <>
  * @copyright  2018
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
@@ -18,7 +18,7 @@ jimport('joomla.application.component.modeladmin');
  *
  * @since  1.6
  */
-class ToolsModelItemCategory extends JModelAdmin
+class ToolsModelLog extends JModelAdmin
 {
 	/**
 	 * @var      string    The prefix to use with controller messages.
@@ -30,7 +30,7 @@ class ToolsModelItemCategory extends JModelAdmin
 	 * @var   	string  	Alias to manage history control
 	 * @since   3.2
 	 */
-	public $typeAlias = 'com_tools.itemcategory';
+	public $typeAlias = 'com_tools.log';
 
 	/**
 	 * @var null  Item data
@@ -108,7 +108,7 @@ class ToolsModelItemCategory extends JModelAdmin
 	 *
 	 * @since    1.6
 	 */
-	public function getTable($type = 'ItemCategory', $prefix = 'ToolsTable', $config = array())
+	public function getTable($type = 'Log', $prefix = 'ToolsTable', $config = array())
 	{
 		return JTable::getInstance($type, $prefix, $config);
 	}
@@ -130,7 +130,7 @@ class ToolsModelItemCategory extends JModelAdmin
 
             // Get the form.
             $form = $this->loadForm(
-                    'com_tools.itemcategory', 'itemcategory',
+                    'com_tools.log', 'log',
                     array('control' => 'jform',
                             'load_data' => $loadData
                     )
@@ -185,7 +185,7 @@ class ToolsModelItemCategory extends JModelAdmin
 	protected function loadFormData()
 	{
 		// Check the session for previously entered form data.
-		$data = JFactory::getApplication()->getUserState('com_tools.edit.itemcategory.data', array());
+		$data = JFactory::getApplication()->getUserState('com_tools.edit.log.data', array());
 
 		if (empty($data))
 		{
@@ -211,17 +211,17 @@ class ToolsModelItemCategory extends JModelAdmin
 			$data->catid = $array;
 
 			// Support for multiple or not foreign key field: type
-			//$array = array();
-			//
-			//foreach ((array) $data->type as $value)
-			//{
-			//	if (!is_array($value))
-			//	{
-			//		$array[] = $value;
-			//	}
-			//}
-			//
-			//$data->type = $array;
+			$array = array();
+
+			foreach ((array) $data->type as $value)
+			{
+				if (!is_array($value))
+				{
+					$array[] = $value;
+				}
+			}
+
+			$data->type = $array;
 		}
 
 		return $data;
@@ -259,7 +259,7 @@ class ToolsModelItemCategory extends JModelAdmin
 
 			if ($item->id != null)
 			{
-				$associations = JLanguageAssociations::getAssociations('com_tools', '#__tools', 'com_tools.itemcategory', $item->id);
+				$associations = JLanguageAssociations::getAssociations('com_tools', '#__tools', 'com_tools.log', $item->id);
 
 				foreach ($associations as $tag => $association)
 				{
@@ -405,7 +405,7 @@ class ToolsModelItemCategory extends JModelAdmin
 			$fields = $addform->addChild('fields');
 			$fields->addAttribute('name', 'associations');
 			$fieldset = $fields->addChild('fieldset');
-			$fieldset->addAttribute('name', 'item_associations');
+			$fieldset->addAttribute('name', 'log_associations');
 			$fieldset->addAttribute('description', 'COM_NEWS_ITEM_ASSOCIATIONS_FIELDSET_DESC');
 			$add = false;
 
@@ -521,7 +521,7 @@ class ToolsModelItemCategory extends JModelAdmin
 				$db = JFactory::getDbo();
 				$query = $db->getQuery(true)
 					->delete('#__associations')
-					->where('context=' . $db->quote('com_tools.itemcategory'))
+					->where('context=' . $db->quote('com_tools.log'))
 					->where('id IN (' . implode(',', $associations) . ')');
 				$db->setQuery($query);
 				$db->execute();
@@ -542,7 +542,7 @@ class ToolsModelItemCategory extends JModelAdmin
 
 					foreach ($associations as $id)
 					{
-						$query->values($id . ',' . $db->quote('com_tools.itemcategory') . ',' . $db->quote($key));
+						$query->values($id . ',' . $db->quote('com_tools.log') . ',' . $db->quote($key));
 					}
 
 					$db->setQuery($query);

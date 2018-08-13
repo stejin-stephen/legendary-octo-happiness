@@ -37,7 +37,7 @@ class ToolsHelper
 		//	"index.php?option=com_categories&extension=com_tools.items",
 		//	$vName == 'categories.items'
 		//);
-
+		
 			JHtmlSidebar::addEntry(
 			JText::_('COM_TOOLS_TITLE_ITEMCATEGORIES'),
 			'index.php?option=com_tools&view=itemcategories',
@@ -48,6 +48,12 @@ class ToolsHelper
 			JText::_('SETTINGS'),
 			'index.php?option=com_tools&view=settings',
 			$vName == 'settings'
+		);
+
+		JHtmlSidebar::addEntry(
+			JText::_('LOGS'),
+			'index.php?option=com_tools&view=logs',
+			$vName == 'logs'
 		);
 
 	}
@@ -104,3 +110,4 @@ class ToolsHelper
 		return $result;
 	}
 }
+

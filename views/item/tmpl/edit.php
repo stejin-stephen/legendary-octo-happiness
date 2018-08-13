@@ -19,7 +19,7 @@ JHtml::_('behavior.keepalive');
 <script type="text/javascript">
 	js = jQuery.noConflict();
 	js(document).ready(function () {
-
+		
 	js('input:hidden.catid').each(function(){
 		var name = js(this).attr('name');
 		if(name.indexOf('catidhidden')){
@@ -34,9 +34,9 @@ JHtml::_('behavior.keepalive');
 			Joomla.submitform(task, document.getElementById('item-form'));
 		}
 		else {
-
+			
 			if (task != 'item.cancel' && document.formvalidator.isValid(document.id('item-form'))) {
-
+				
 				Joomla.submitform(task, document.getElementById('item-form'));
 			}
 			else {
@@ -63,7 +63,7 @@ JHtml::_('behavior.keepalive');
 				<?php //echo $this->form->renderField('catid'); ?>
 
 			<?php
-				foreach((array)$this->item->catid as $value):
+				foreach((array)$this->item->catid as $value): 
 					if(!is_array($value)):
 						echo '<input type="hidden" class="catid" name="jform[catidhidden]['.$value.']" value="'.$value.'" />';
 					endif;
@@ -73,7 +73,7 @@ JHtml::_('behavior.keepalive');
 			<!--<div id="url" style="<?php echo $this->item->type == 2 ? '' : 'display: none' ; ?>">
 				<?php echo $this->form->renderField('url'); ?>
 			</div>-->
-
+			
 			<!--<div id="docAttach" class="control-group" style="<?php echo $this->item->type == 3 ? '' : 'display: none' ; ?>">
 				<div class="control-label">
 					<label>Add File</label>
@@ -84,24 +84,24 @@ JHtml::_('behavior.keepalive');
 					</a>
 				</div>
 			</div>-->
-
+			
 			<!--<?php echo $this->form->renderField('document'); ?>
 
 				<?php if (!empty($this->item->document)) : ?>
 					<?php $documentFiles = array(); ?>
 					<?php foreach ((array)$this->item->document as $fileSingle) : ?>
 						<?php if (!is_array($fileSingle)) : ?>
-							<a href="<?php echo JRoute::_(JUri::root() . 'downloads/tools' . DIRECTORY_SEPARATOR . $fileSingle, false);?>"><?php echo $fileSingle; ?></a> |
+							<a href="<?php echo JRoute::_(JUri::root() . 'downloads/tools' . DIRECTORY_SEPARATOR . $fileSingle, false);?>"><?php echo $fileSingle; ?></a> | 
 							<?php $documentFiles[] = $fileSingle; ?>
 						<?php endif; ?>
 					<?php endforeach; ?>
 					<input type="hidden" name="jform[document_hidden]" id="jform_document_hidden" value="<?php echo implode(',', $documentFiles); ?>" />
 				<?php endif; ?>				-->
-
+			
             <div id="image-info">
                     <?php echo $this->form->renderFieldset('image-info');  ?>
             </div>
-			<div class="form-vertical">
+			<div class="form-vertical">	
 				<?php echo $this->form->renderField('description'); ?>
 			</div>
 				<input type="hidden" name="jform[image]" value="<?php echo $this->item->image; ?>" />
@@ -125,7 +125,7 @@ JHtml::_('behavior.keepalive');
 					<?php endif; ?>
 				</fieldset>
 			</div>
-
+			
 			<div class="span3 main-filter">
 			<?php echo JLayoutHelper::render('joomla.edit.global', $this); ?>
 				<div class="form-vertical">
@@ -137,7 +137,7 @@ JHtml::_('behavior.keepalive');
 			</div>
 		</div>
 		<?php echo JHtml::_('bootstrap.endTab'); ?>
-
+		
 		<?php  echo JHtml::_('bootstrap.addTab', 'myTab', JText::_('Downloads'), 'Downloads'); ?>
 			<div class="row-fluid form-horizontal-desktop">
 				<div class="span9">
@@ -145,7 +145,7 @@ JHtml::_('behavior.keepalive');
 				</div>
 
 			</div>
-		<?php echo JHtml::_('bootstrap.endTab'); ?>
+		<?php echo JHtml::_('bootstrap.endTab'); ?>	
 
 		<?php /*if (JFactory::getUser()->authorise('core.admin','tools')) :
 		echo JHtml::_('bootstrap.addTab', 'myTab', 'permissions', JText::_('JGLOBAL_ACTION_PERMISSIONS_LABEL', true));
@@ -166,12 +166,12 @@ JHtml::_('behavior.keepalive');
 		echo ($this->item->type == 2) ?
 		'jQuery("#jform_imageinfo_url").parent().parent().show();' :
 		'jQuery("#jform_imageinfo_url").parent().parent().hide();';
-
+		
 		echo ($this->item->type == 1 || $this->item->type == 2) ?
 		'jQuery(".btn-info").hide();' :
 		'jQuery(".btn-info").show();'; ?>
 	});
-
+	
 	jQuery("#jform_type").change(function() {
 		if(this.value == 2) {
 			jQuery(".btn-info").hide();
@@ -192,5 +192,5 @@ JHtml::_('behavior.keepalive');
 			jQuery("#jform_imageinfo_url").parent().parent().fadeOut();
 		}
 	});
-
+	
 </script>

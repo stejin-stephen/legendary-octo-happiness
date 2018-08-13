@@ -81,7 +81,7 @@ class ToolsViewItems extends JViewLegacy
 
 				if (isset($this->items[0]))
 				{
-					JToolbarHelper::custom('items.duplicate', 'copy.png', 'copy_f2.png', 'JTOOLBAR_DUPLICATE', true);
+					//JToolbarHelper::custom('items.duplicate', 'copy.png', 'copy_f2.png', 'JTOOLBAR_DUPLICATE', true);
 				}
 			}
 

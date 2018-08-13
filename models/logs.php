@@ -3,7 +3,7 @@
 /**
  * @version    1.0
  * @package    Com_Tools
- * @author      <https://development.karakas.be/issues/5184>
+ * @author      <>
  * @copyright  2018
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
@@ -16,7 +16,7 @@ jimport('joomla.application.component.modellist');
  *
  * @since  1.6
  */
-class ToolsModelItemCategories extends JModelList
+class ToolsModelLogs extends JModelList
 {
     
         
@@ -34,13 +34,13 @@ class ToolsModelItemCategories extends JModelList
 		{
 			$config['filter_fields'] = array(
 				'id', 'a.`id`',
-				//'catid', 'a.`catid`',
+				'catid', 'a.`catid`',
 				'title', 'a.`title`',
 				'alias', 'a.`alias`',
 				'description', 'a.`description`',
 				'image', 'a.`image`',
 				'document', 'a.`document`',
-				//'type', 'a.`type`',
+				'type', 'a.`type`',
 				'ordering', 'a.`ordering`',
 				'state', 'a.`state`',
 				'access', 'a.`access`',
@@ -92,7 +92,7 @@ class ToolsModelItemCategories extends JModelList
 		$published = $app->getUserStateFromRequest($this->context . '.filter.state', 'filter_published', '', 'string');
 		$this->setState('filter.state', $published);
 		// Filtering type
-		//$this->setState('filter.type', $app->getUserStateFromRequest($this->context.'.filter.type', 'filter_type', '', 'string'));
+		$this->setState('filter.type', $app->getUserStateFromRequest($this->context.'.filter.type', 'filter_type', '', 'string'));
 
 
 		// Load the parameters.
@@ -100,7 +100,8 @@ class ToolsModelItemCategories extends JModelList
 		$this->setState('params', $params);
 
 		// List state information.
-		parent::populateState('a.title', 'asc');
+		//parent::populateState('a.title', 'asc');
+		parent::populateState('a.email', 'asc');
 	}
 
 	/**
@@ -151,34 +152,31 @@ class ToolsModelItemCategories extends JModelList
 				'list.select', 'DISTINCT a.*'
 			)
 		);
-		$query->from('`#__tools_categories` AS a');
+		$query->from('`#__tools_log` AS a');
                 
 		// Join over the users for the checked out user
-		$query->select("uc.name AS uEditor");
-		$query->join("LEFT", "#__users AS uc ON uc.id=a.checked_out");
+		//$query->select("uc.name AS uEditor");
+		//$query->join("LEFT", "#__users AS uc ON uc.id=a.checked_out");
 
 		// Join over the access level field 'access'
-		$query->select('`access`.title AS `access`');
-		$query->join('LEFT', '#__viewlevels AS access ON `access`.id = a.`access`');
+		//$query->select('`access`.title AS `access`');
+		//$query->join('LEFT', '#__viewlevels AS access ON `access`.id = a.`access`');
 
 		// Join over the user field 'created_by'
-		$query->select('`created_by`.name AS `created_by`');
-		$query->join('LEFT', '#__users AS `created_by` ON `created_by`.id = a.`created_by`');
+		//$query->select('`created_by`.name AS `created_by`');
+		//$query->join('LEFT', '#__users AS `created_by` ON `created_by`.id = a.`created_by`');
 
 		// Join over the user field 'modified_by'
-		$query->select('`modified_by`.name AS `modified_by`');
-		$query->join('LEFT', '#__users AS `modified_by` ON `modified_by`.id = a.`modified_by`');
+		//$query->select('`modified_by`.name AS `modified_by`');
+		//$query->join('LEFT', '#__users AS `modified_by` ON `modified_by`.id = a.`modified_by`');
 
 		// Join over the language
-		$query->select('l.title AS language_title')
-			->join('LEFT', $db->quoteName('#__languages') . ' AS l ON l.lang_code = a.language');
+		//$query->select('l.title AS language_title')
+		//	->join('LEFT', $db->quoteName('#__languages') . ' AS l ON l.lang_code = a.language');
 
 		// Join over the categories.
 		//$query->select('c.title AS category_title')
 		//	->join('LEFT', '#__categories AS c ON c.id = a.catid');
-		
-		//only fetch parent categories
-		$query->where('a.parent_id = 0');
 
 		// Filter by access level.
 		if ($access = $this->getState('filter.access'))
@@ -207,11 +205,11 @@ class ToolsModelItemCategories extends JModelList
 		}
 
 		// Filter by category.
-		//$categoryId = $this->getState('filter.category_id');
-		//if (is_numeric($categoryId))
-		//{
-		//	$query->where('a.catid = ' . (int) $categoryId);
-		//}
+		$categoryId = $this->getState('filter.category_id');
+		if (is_numeric($categoryId))
+		{
+			$query->where('a.catid = ' . (int) $categoryId);
+		}
 
 		// Filter by search in title
 		$search = $this->getState('filter.search');
@@ -231,12 +229,12 @@ class ToolsModelItemCategories extends JModelList
                 
 
 		// Filtering type
-		//$filter_type = $this->state->get("filter.type");
-		//
-		//if ($filter_type !== null && (is_numeric($filter_type) || !empty($filter_type)))
-		//{
-		//	$query->where("a.`type` = '".$db->escape($filter_type)."'");
-		//}
+		$filter_type = $this->state->get("filter.type");
+
+		if ($filter_type !== null && (is_numeric($filter_type) || !empty($filter_type)))
+		{
+			$query->where("a.`type` = '".$db->escape($filter_type)."'");
+		}
 		
 		if(JRequest::getVar('tmpl')!='component'){
 			// Filter on the language.
@@ -276,30 +274,9 @@ class ToolsModelItemCategories extends JModelList
                 
 		foreach ($items as $oneItem)
 		{
-			$oneItem->subItems = self::getSubItems($oneItem->id);;
+					$oneItem->type = JText::_('COM_TOOLS_ITEMS_TYPE_OPTION_' . strtoupper($oneItem->type));
 		}
 
 		return $items;
-	}
-	
-	public function getSubItems($id)
-	{
-		// Get a db connection.
-		$db = JFactory::getDbo();
-		
-		// Create a new query object.
-		$query = $db->getQuery(true);
-		
-		$query->select('*');
-		$query->from('#__tools_categories');
-		$query->where("parent_id = ".$id);
-		
-		// Reset the query using our newly populated query object.
-		$db->setQuery($query);
-
-		// Load the results
-		$results = $db->loadObjectList();
-		
-		return $results;
 	}
 }

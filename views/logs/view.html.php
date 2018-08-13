@@ -3,7 +3,7 @@
 /**
  * @version    1.0
  * @package    Com_Tools
- * @author      <https://development.karakas.be/issues/5184>
+ * @author      <>
  * @copyright  2018
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
@@ -17,7 +17,7 @@ jimport('joomla.application.component.view');
  *
  * @since  1.6
  */
-class ToolsViewItemCategories extends JViewLegacy
+class ToolsViewLogs extends JViewLegacy
 {
 	protected $items;
 
@@ -41,14 +41,14 @@ class ToolsViewItemCategories extends JViewLegacy
 		$this->pagination = $this->get('Pagination');
         $this->filterForm = $this->get('FilterForm');
         $this->activeFilters = $this->get('ActiveFilters');
-		
+
 		// Check for errors.
 		if (count($errors = $this->get('Errors')))
 		{
 			throw new Exception(implode("\n", $errors));
 		}
 
-		ToolsHelper::addSubmenu('itemcategories');
+		ToolsHelper::addSubmenu('logs');
 
 		$this->addToolbar();
 
@@ -68,26 +68,26 @@ class ToolsViewItemCategories extends JViewLegacy
 		$state = $this->get('State');
 		$canDo = ToolsHelper::getActions();
 
-		JToolBarHelper::title(JText::_('COM_TOOLS_TITLE_ITEMS_CAT'), 'link news');
+		JToolBarHelper::title(JText::_('COM_TOOLS_TITLE_ITEMS_LG'), 'link news');
 
 		// Check if the form exists before showing the add/edit buttons
-		$formPath = JPATH_COMPONENT_ADMINISTRATOR . '/views/itemcategory';
+		$formPath = JPATH_COMPONENT_ADMINISTRATOR . '/views/log';
 
 		if (file_exists($formPath))
 		{
 			if ($canDo->get('core.create'))
 			{
-				JToolBarHelper::addNew('itemcategory.add', 'JTOOLBAR_NEW');
+				JToolBarHelper::addNew('log.add', 'JTOOLBAR_NEW');
 
 				if (isset($this->items[0]))
 				{
-					//JToolbarHelper::custom('itemcategories.duplicate', 'copy.png', 'copy_f2.png', 'JTOOLBAR_DUPLICATE', true);
+					JToolbarHelper::custom('logs.duplicate', 'copy.png', 'copy_f2.png', 'JTOOLBAR_DUPLICATE', true);
 				}
 			}
 
 			if ($canDo->get('core.edit') && isset($this->items[0]))
 			{
-				JToolBarHelper::editList('itemcategory.edit', 'JTOOLBAR_EDIT');
+				JToolBarHelper::editList('log.edit', 'JTOOLBAR_EDIT');
 			}
 		}
 
@@ -96,24 +96,24 @@ class ToolsViewItemCategories extends JViewLegacy
 			if (isset($this->items[0]->state))
 			{
 				JToolBarHelper::divider();
-				JToolBarHelper::custom('itemcategories.publish', 'publish.png', 'publish_f2.png', 'JTOOLBAR_PUBLISH', true);
-				JToolBarHelper::custom('itemcategories.unpublish', 'unpublish.png', 'unpublish_f2.png', 'JTOOLBAR_UNPUBLISH', true);
+				JToolBarHelper::custom('logs.publish', 'publish.png', 'publish_f2.png', 'JTOOLBAR_PUBLISH', true);
+				JToolBarHelper::custom('logs.unpublish', 'unpublish.png', 'unpublish_f2.png', 'JTOOLBAR_UNPUBLISH', true);
 			}
 			elseif (isset($this->items[0]))
 			{
 				// If this component does not use state then show a direct delete button as we can not trash
-				JToolBarHelper::deleteList('', 'itemcategories.delete', 'JTOOLBAR_DELETE');
+				JToolBarHelper::deleteList('', 'logs.delete', 'JTOOLBAR_DELETE');
 			}
 
 			if (isset($this->items[0]->state))
 			{
 				JToolBarHelper::divider();
-				JToolBarHelper::archiveList('itemcategories.archive', 'JTOOLBAR_ARCHIVE');
+				JToolBarHelper::archiveList('logs.archive', 'JTOOLBAR_ARCHIVE');
 			}
 
 			if (isset($this->items[0]->checked_out))
 			{
-				JToolBarHelper::custom('itemcategories.checkin', 'checkin.png', 'checkin_f2.png', 'JTOOLBAR_CHECKIN', true);
+				JToolBarHelper::custom('logs.checkin', 'checkin.png', 'checkin_f2.png', 'JTOOLBAR_CHECKIN', true);
 			}
 		}
 
@@ -122,12 +122,12 @@ class ToolsViewItemCategories extends JViewLegacy
 		{
 			if ($state->get('filter.state') == -2 && $canDo->get('core.delete'))
 			{
-				JToolBarHelper::deleteList('', 'itemcategories.delete', 'JTOOLBAR_EMPTY_TRASH');
+				JToolBarHelper::deleteList('', 'logs.delete', 'JTOOLBAR_EMPTY_TRASH');
 				JToolBarHelper::divider();
 			}
 			elseif ($canDo->get('core.edit.state'))
 			{
-				JToolBarHelper::trash('itemcategories.trash', 'JTOOLBAR_TRASH');
+				JToolBarHelper::trash('logs.trash', 'JTOOLBAR_TRASH');
 				JToolBarHelper::divider();
 			}
 		}
@@ -138,7 +138,7 @@ class ToolsViewItemCategories extends JViewLegacy
 		}
 
 		// Set sidebar action - New in 3.0
-		JHtmlSidebar::setAction('index.php?option=com_tools&view=itemcategories');
+		JHtmlSidebar::setAction('index.php?option=com_tools&view=logs');
 	}
 
 	/**

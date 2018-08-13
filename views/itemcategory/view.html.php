@@ -3,7 +3,7 @@
 /**
  * @version    1.0
  * @package    Com_Tools
- * @author      <>
+ * @author      <https://development.karakas.be/issues/5184>
  * @copyright  2018
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
