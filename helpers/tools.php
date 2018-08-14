@@ -1,61 +1,59 @@
 <?php
 
 /**
- * @version    1.0
+ * @version    CVS: 1.0
  * @package    Com_Tools
  * @author      <>
  * @copyright  2018
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
-// No direct access
 defined('_JEXEC') or die;
 
+JLoader::register('ToolsHelper', JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_tools' . DIRECTORY_SEPARATOR . 'helpers' . DIRECTORY_SEPARATOR . 'tools.php');
+
 /**
- * Tools helper.
+ * Class ToolsFrontendHelper
  *
  * @since  1.6
  */
-class ToolsHelper
+class ToolsHelpersTools
 {
 	/**
-	 * Configure the Linkbar.
+	* Get category name using category ID
+	* @param integer $category_id Category ID
+	* @return mixed category name if the category was found, null otherwise
+	*/
+	public static function getCategoryNameByCategoryId($category_id) {
+		$db = JFactory::getDbo();
+		$query = $db->getQuery(true);
+
+		$query
+			->select('title')
+			->from('#__categories')
+			->where('id = ' . intval($category_id));
+
+		$db->setQuery($query);
+		return $db->loadResult();
+	}
+	/**
+	 * Get an instance of the named model
 	 *
-	 * @param   string  $vName  string
+	 * @param   string  $name  Model name
 	 *
-	 * @return void
+	 * @return null|object
 	 */
-	public static function addSubmenu($vName = '')
+	public static function getModel($name)
 	{
-		JHtmlSidebar::addEntry(
-			JText::_('COM_TOOLS_TITLE'),
-			'index.php?option=com_tools&view=items',
-			$vName == 'items'
-		);
+		$model = null;
 
-		//JHtmlSidebar::addEntry(
-		//	JText::_('JCATEGORIES') . ' (' . JText::_('COM_TOOLS_TITLE_ITEMS') . ')',
-		//	"index.php?option=com_categories&extension=com_tools.items",
-		//	$vName == 'categories.items'
-		//);
-		
-			JHtmlSidebar::addEntry(
-			JText::_('COM_TOOLS_TITLE_ITEMCATEGORIES'),
-			'index.php?option=com_tools&view=itemcategories',
-			$vName == 'itemcategories'
-		);
+		// If the file exists, let's
+		if (file_exists(JPATH_SITE . '/components/com_tools/models/' . strtolower($name) . '.php'))
+		{
+			require_once JPATH_SITE . '/components/com_tools/models/' . strtolower($name) . '.php';
+			$model = JModelLegacy::getInstance($name, 'ToolsModel');
+		}
 
-		JHtmlSidebar::addEntry(
-			JText::_('SETTINGS'),
-			'index.php?option=com_tools&view=settings',
-			$vName == 'settings'
-		);
-
-		JHtmlSidebar::addEntry(
-			JText::_('LOGS'),
-			'index.php?option=com_tools&view=logs',
-			$vName == 'logs'
-		);
-
+		return $model;
 	}
 
 	/**
@@ -84,30 +82,37 @@ class ToolsHelper
 		return explode(',', $db->loadResult());
 	}
 
-	/**
-	 * Gets a list of the actions that can be performed.
-	 *
-	 * @return    JObject
-	 *
-	 * @since    1.6
-	 */
-	public static function getActions()
-	{
-		$user   = JFactory::getUser();
-		$result = new JObject;
+    /**
+     * Gets the edit permission for an user
+     *
+     * @param   mixed  $item  The item
+     *
+     * @return  bool
+     */
+    public static function canUserEdit($item)
+    {
+        $permission = false;
+        $user       = JFactory::getUser();
 
-		$assetName = 'com_tools';
+        if ($user->authorise('core.edit', 'com_tools'))
+        {
+            $permission = true;
+        }
+        else
+        {
+            if (isset($item->created_by))
+            {
+                if ($user->authorise('core.edit.own', 'com_tools') && $item->created_by == $user->id)
+                {
+                    $permission = true;
+                }
+            }
+            else
+            {
+                $permission = true;
+            }
+        }
 
-		$actions = array(
-			'core.admin', 'core.manage', 'core.create', 'core.edit', 'core.edit.own', 'core.edit.state', 'core.delete'
-		);
-
-		foreach ($actions as $action)
-		{
-			$result->set($action, $user->authorise($action, $assetName));
-		}
-
-		return $result;
-	}
+        return $permission;
+    }
 }
-

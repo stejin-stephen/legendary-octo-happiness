@@ -29,7 +29,7 @@ class JFormFieldTimecreated extends JFormField
 	/**
 	 * Method to get the field input markup.
 	 *
-	 * @return  string    The field input markup.
+	 * @return   string  The field input markup.
 	 *
 	 * @since    1.6
 	 */
@@ -42,7 +42,7 @@ class JFormFieldTimecreated extends JFormField
 
 		if (!strtotime($time_created))
 		{
-			$time_created = JFactory::getDate('now', JFactory::getConfig()->get('offset'))->toSql(true);
+			$time_created = JFactory::getDate()->toSql();
 			$html[]       = '<input type="hidden" name="' . $this->name . '" value="' . $time_created . '" />';
 		}
 

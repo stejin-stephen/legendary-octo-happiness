@@ -1,14 +1,16 @@
 <?php
 
 /**
- * @version    1.0
+ * @version    CVS: 1.0
  * @package    Com_Tools
- * @author      <https://development.karakas.be/issues/5184>
+ * @author      <>
  * @copyright  2018
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 // No direct access
 defined('_JEXEC') or die;
+
+//use Joomla\CMS\Factory;
 
 jimport('joomla.application.component.view');
 
@@ -17,7 +19,7 @@ jimport('joomla.application.component.view');
  *
  * @since  1.6
  */
-class ToolsViewItem extends JViewLegacy
+class ToolsViewItemform extends JViewLegacy
 {
 	protected $state;
 
@@ -26,6 +28,8 @@ class ToolsViewItem extends JViewLegacy
 	protected $form;
 
 	protected $params;
+
+	protected $canSave;
 
 	/**
 	 * Display the view
@@ -41,14 +45,11 @@ class ToolsViewItem extends JViewLegacy
 		$app  = JFactory::getApplication();
 		$user = JFactory::getUser();
 
-		$this->state  = $this->get('State');
-		$this->item   = $this->get('Item');
-		$this->params = $app->getParams('com_tools');
-
-		if (!empty($this->item))
-		{
-			$this->form = $this->get('Form');
-		}
+		$this->state   = $this->get('State');
+		$this->item    = $this->get('Item');
+		$this->params  = $app->getParams('com_tools');
+		$this->canSave = $this->get('CanSave');
+		$this->form		= $this->get('Form');
 
 		// Check for errors.
 		if (count($errors = $this->get('Errors')))
@@ -56,20 +57,10 @@ class ToolsViewItem extends JViewLegacy
 			throw new Exception(implode("\n", $errors));
 		}
 
-		if(!in_array($this->item->access, $user->getAuthorisedViewLevels())){
-                return JError::raiseError(403, JText::_('JERROR_ALERTNOAUTHOR'));
+		if(!empty($this->item->access) && !in_array($this->item->access, $user->getAuthorisedViewLevels())){
+                throw new Exception(JText::_('JERROR_ALERTNOAUTHOR'), 403);
             }
         
-
-		if ($this->_layout == 'edit')
-		{
-			$authorised = $user->authorise('core.create', 'com_tools');
-
-			if ($authorised !== true)
-			{
-				throw new Exception(JText::_('JERROR_ALERTNOAUTHOR'));
-			}
-		}
 
 		$this->_prepareDocument();
 
@@ -90,7 +81,7 @@ class ToolsViewItem extends JViewLegacy
 		$title = null;
 
 		// Because the application sets a default page title,
-		// We need to get it from the menu item itself
+		// we need to get it from the menu item itself
 		$menu = $menus->getActive();
 
 		if ($menu)

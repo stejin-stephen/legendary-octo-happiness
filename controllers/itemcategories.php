@@ -2,7 +2,7 @@
 /**
  * @version    1.0
  * @package    Com_Tools
- * @author      <>
+ * @author      <https://development.karakas.be/issues/5184>
  * @copyright  2018
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
@@ -10,98 +10,56 @@
 // No direct access.
 defined('_JEXEC') or die;
 
-jimport('joomla.application.component.controlleradmin');
-
-use Joomla\Utilities\ArrayHelper;
-
 /**
  * Items list controller class.
  *
  * @since  1.6
  */
-class ToolsControllerItemCategories extends JControllerAdmin
+class ToolsControllerItemCategories extends ToolsController
 {
-	/**
-	 * Method to clone existing Items
-	 *
-	 * @return void
-	 */
-	public function duplicate()
-	{
-		// Check for request forgeries
-		Jsession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
-
-		// Get id(s)
-		$pks = $this->input->post->get('cid', array(), 'array');
-
-		try
-		{
-			if (empty($pks))
-			{
-				throw new Exception(JText::_('COM_TOOLS_NO_ELEMENT_SELECTED'));
-			}
-
-			ArrayHelper::toInteger($pks);
-			$model = $this->getModel();
-			$model->duplicate($pks);
-			$this->setMessage(Jtext::_('COM_TOOLS_ITEMS_SUCCESS_DUPLICATED'));
-		}
-		catch (Exception $e)
-		{
-			JFactory::getApplication()->enqueueMessage($e->getMessage(), 'warning');
-		}
-
-		$this->setRedirect('index.php?option=com_tools&view=itemcategories');
-	}
-
 	/**
 	 * Proxy for getModel.
 	 *
-	 * @param   string  $name    Optional. Model name
-	 * @param   string  $prefix  Optional. Class prefix
-	 * @param   array   $config  Optional. Configuration array for model
+	 * @param   string  $name    The model name. Optional.
+	 * @param   string  $prefix  The class prefix. Optional
+	 * @param   array   $config  Configuration array for model. Optional
 	 *
-	 * @return  object	The Model
+	 * @return object	The model
 	 *
-	 * @since    1.6
+	 * @since	1.6
 	 */
-	public function getModel($name = 'itemcategory', $prefix = 'ToolsModel', $config = array())
+	public function &getModel($name = 'ItemCategories', $prefix = 'ToolsModel', $config = array())
 	{
 		$model = parent::getModel($name, $prefix, array('ignore_request' => true));
 
 		return $model;
 	}
-
-	/**
-	 * Method to save the submitted ordering values for records via AJAX.
-	 *
-	 * @return  void
-	 *
-	 * @since   3.0
-	 */
-	public function saveOrderAjax()
+	
+	public function saveLog()
 	{
-		// Get the input
-		$input = JFactory::getApplication()->input;
-		$pks   = $input->post->get('cid', array(), 'array');
-		$order = $input->post->get('order', array(), 'array');
-
-		// Sanitize the input
-		ArrayHelper::toInteger($pks);
-		ArrayHelper::toInteger($order);
-
-		// Get the model
-		$model = $this->getModel();
-
-		// Save the ordering
-		$return = $model->saveorder($pks, $order);
-
-		if ($return)
-		{
-			echo "1";
-		}
-
-		// Close the application
-		JFactory::getApplication()->close();
+		$session = JFactory::getSession();
+		$tool = JRequest::getVar('toolId');
+		$logged_in = $session->get('logged_in');
+		
+		if(!$loggedIn) echo NULL; exit;
+		
+		//ordering
+		$db->setQuery("SELECT max(ordering) as max_order FROM #__dmo3c_tools_log");
+		$item = $db->loadObject();
+		$max_ordering = $item->max_order;
+		//ordering
+		
+		$obj = new stdClass();
+		$obj->tool_catid = $tool;
+		$obj->email = $logged_in;
+		$obj->ordering = $max_ordering+1;
+		$obj->state = 1;
+		$obj->created = time();
+		$obj->modified = time();
+		
+		$db->insertObject('#__tools_log', $obj);
+		
+		echo Route::_('index.php?option=com_tools&view=itemcategory&id='.$id);
+		exit;
 	}
 }

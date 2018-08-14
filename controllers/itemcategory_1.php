@@ -1,9 +1,9 @@
 <?php
 
 /**
- * @version    CVS: 1.0
+ * @version    1.0
  * @package    Com_Tools
- * @author      <>
+ * @author      <https://development.karakas.be/issues/5184>
  * @copyright  2018
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
@@ -15,7 +15,7 @@ defined('_JEXEC') or die;
  *
  * @since  1.6
  */
-class ToolsControllerItem extends JControllerLegacy
+class ToolsControllerItemCategory extends JControllerLegacy
 {
 	/**
 	 * Method to check out an item for editing and redirect to the edit form.
@@ -29,14 +29,14 @@ class ToolsControllerItem extends JControllerLegacy
 		$app = JFactory::getApplication();
 
 		// Get the previous edit id (if any) and the current edit id.
-		$previousId = (int) $app->getUserState('com_tools.edit.item.id');
+		$previousId = (int) $app->getUserState('com_tools.edit.itemcategory.id');
 		$editId     = $app->input->getInt('id', 0);
 
 		// Set the user id for the user to edit in the session.
-		$app->setUserState('com_tools.edit.item.id', $editId);
+		$app->setUserState('com_tools.edit.itemcategory.id', $editId);
 
 		// Get the model.
-		$model = $this->getModel('Item', 'ToolsModel');
+		$model = $this->getModel('ItemCategory', 'ToolsModel');
 
 		// Check out the item
 		if ($editId)
@@ -51,7 +51,7 @@ class ToolsControllerItem extends JControllerLegacy
 		}
 
 		// Redirect to the edit screen.
-		$this->setRedirect(JRoute::_('index.php?option=com_tools&view=itemform&layout=edit', false));
+		$this->setRedirect(JRoute::_('index.php?option=com_tools&view=itemcategoryform&layout=edit', false));
 	}
 
 	/**
@@ -72,7 +72,7 @@ class ToolsControllerItem extends JControllerLegacy
 
 		if ($user->authorise('core.edit', 'com_tools') || $user->authorise('core.edit.state', 'com_tools'))
 		{
-			$model = $this->getModel('Item', 'ToolsModel');
+			$model = $this->getModel('ItemCategory', 'ToolsModel');
 
 			// Get the user data.
 			$id    = $app->input->getInt('id');
@@ -88,10 +88,10 @@ class ToolsControllerItem extends JControllerLegacy
 			}
 
 			// Clear the profile id from the session.
-			$app->setUserState('com_tools.edit.item.id', null);
+			$app->setUserState('com_tools.edit.itemcategory.id', null);
 
 			// Flush the data from the session.
-			$app->setUserState('com_tools.edit.item.data', null);
+			$app->setUserState('com_tools.edit.itemcategory.data', null);
 
 			// Redirect to the list screen.
 			$this->setMessage(JText::_('COM_TOOLS_ITEM_SAVED_SUCCESSFULLY'));
@@ -101,7 +101,7 @@ class ToolsControllerItem extends JControllerLegacy
 			if (!$item)
 			{
 				// If there isn't any menu item active, redirect to list view
-				$this->setRedirect(JRoute::_('index.php?option=com_tools&view=items', false));
+				$this->setRedirect(JRoute::_('index.php?option=com_tools&view=itemcategories', false));
 			}
 			else
 			{
@@ -131,7 +131,7 @@ class ToolsControllerItem extends JControllerLegacy
 
 		if ($user->authorise('core.delete', 'com_tools'))
 		{
-			$model = $this->getModel('Item', 'ToolsModel');
+			$model = $this->getModel('ItemCategory', 'ToolsModel');
 
 			// Get the user data.
 			$id = $app->input->getInt('id', 0);
@@ -156,7 +156,7 @@ class ToolsControllerItem extends JControllerLegacy
                 $app->setUserState('com_tools.edit.inventory.data', null);
 
                 $app->enqueueMessage(JText::_('COM_TOOLS_ITEM_DELETED_SUCCESSFULLY'), 'success');
-                $app->redirect(JRoute::_('index.php?option=com_tools&view=items', false));
+                $app->redirect(JRoute::_('index.php?option=com_tools&view=itemcategories', false));
 			}
 
 			// Redirect to the list screen.

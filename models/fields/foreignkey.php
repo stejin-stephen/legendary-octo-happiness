@@ -7,6 +7,7 @@
  * @copyright  2018
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
+
 defined('JPATH_BASE') or die;
 
 use Joomla\CMS\Factory;
@@ -24,7 +25,7 @@ class JFormFieldForeignKey extends FormField
 	/**
 	 * The form field type.
 	 *
-	 * @var      string
+	 * @var        string
 	 * @since    1.6
 	 */
 	protected $type = 'foreignkey';
@@ -61,8 +62,6 @@ class JFormFieldForeignKey extends FormField
 		// Flag to identify if the fk_value is multiple
 		$this->value_multiple = (int) $this->getAttribute('value_multiple', 0);
 
-        $this->required = (string) $this->getAttribute('required', 0);
-
         // Flag to identify if the fk_value hides the trashed items
         $this->hideTrashed = (int) $this->getAttribute('hide_trashed', 0);
 
@@ -85,14 +84,14 @@ class JFormFieldForeignKey extends FormField
 			$this->value_fields = explode(',', $this->value_fields);
             $this->separator    = (string) $this->getAttribute('separator');
 
-			$fk_value = ' CONCAT(';
+            $fk_value = ' CONCAT(';
 
-			foreach ($this->value_fields as $field)
-			{
-				$fk_value .= $db->quoteName($field) . ', \'' . $this->separator . '\', ';
-			}
-			
-			$fk_value = substr($fk_value, 0, -(strlen($this->separator) + 6));
+            foreach ($this->value_fields as $field)
+            {
+                $fk_value .= $db->quoteName($field) . ', \'' . $this->separator . '\', ';
+            }
+
+            $fk_value = substr($fk_value, 0, -(strlen($this->separator) + 6));
 			$fk_value .= ') AS ' . $db->quoteName($this->value_field);
 		}
 		else
@@ -114,7 +113,7 @@ class JFormFieldForeignKey extends FormField
             $query->where($db->quoteName('state') . ' != -2');
         }
 
-		if ($this->ordering)
+        if ($this->ordering)
         {
             $query->order('ordering ASC');
         }
@@ -123,11 +122,6 @@ class JFormFieldForeignKey extends FormField
 		$results = $db->loadObjectList();
 
 		$input_options = 'class="' . $this->getAttribute('class') . '"';
-
-        if($this->required === "true")
-        {
-            $input_options .= 'required="required"';
-        }
 
 		// Depends of the type of input, the field will show a type or another
 		switch ($this->input_type)
