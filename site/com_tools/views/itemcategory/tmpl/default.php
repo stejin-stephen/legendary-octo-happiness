@@ -17,7 +17,6 @@ if (count($page_title_parts)>0) {
 } else {
 	$new_page_title = $page_title_parts;
 }
-//var_dump($this->item);
 
 $canEdit = JFactory::getUser()->authorise('core.edit', 'com_tools.' . $this->item->id);
 
@@ -36,7 +35,56 @@ if (!$canEdit && JFactory::getUser()->authorise('core.edit.own', 'com_tools' . $
 	</div>
 </div>
 
-<?php echo $this->loadTemplate('items'); ?>
+<?php echo $this->loadTemplate('items');
+
+foreach($this->item->subitems as $sub): ?>
+
+<div class="dynamic_content">
+	<div class="title  nomargin">
+
+		<h3 class="contentheading">
+				<?php
+			$title = explode(" ",$this->escape($sub->title), 2);
+			echo $title[0]." <span class='red'>".$title[1]."</span>";
+		?></h3>
+
+		<div itemprop="articleBody">
+			<?= $sub->description; ?>
+		</div>
+	</div>
+</div>
+
+    <div class="listing column c0 nomargin">
+        <div id="brochur_reports">
+            <div id="listing_type1">
+                <div class="reports_listing_clm c11 nomargin column">
+
+                <?php $i = 0; foreach ($sub->tools as $i => $item) :?>
+                    <ul class="column nomargin c6">
+                        <li class="title c6 nomargin">
+                            <span class="icon column"></span>
+                            <h4 class="column"><?php echo $this->escape($item->title); ?></h4>
+                        </li>
+                        <li class="list c6 nomargin">
+                            <dl>
+                                <dt><img alt="Preview" name="mem_image" src="<?php echo $item->cat->image; ?>"></dt>
+                                <dd>
+                                    <p><?php echo $item->introtext; ?></p>
+                                    <span class="dwn"><a class="pdf" href="<?php echo $item->link; ?>"><?php echo $item->showtext; ?></a></span>
+                                </dd>
+                            </dl>
+                        </li>
+                    </ul>
+                <?php echo $i%2 !=0 ? '</div><div class="reports_listing_clm c11 nomargin column">' : '';
+                $i++; endforeach; ?>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+<?php endforeach; ?>
 
 <!-- <div class="item_fields">
 
