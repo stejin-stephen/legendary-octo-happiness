@@ -49,14 +49,16 @@ class ToolsViewItemCategories extends JViewLegacy
 		$this->filterForm = $this->get('FilterForm');
 		$this->activeFilters = $this->get('ActiveFilters');
 		$this->settings = $this->get('Settings');
-		
+
 		$pattern = '#<hr\s+id=("|\')system-readmore("|\')\s*\/*>#i';
-		
+
 		// Prepare the data.
-		foreach ($this->items as $item) {
+		foreach ($this->items as $item){
 			$item->cat = json_decode($item->image);
 			$item->introtext = truncateHelper::truncate($item->description,100,array('html' => true,'exact' => false, 'ending' => '...'));
-			$item->link = JRoute::_('index.php?option=com_tools&view=itemcategory&id='.(int) $item->id);
+			//$item->link = JRoute::_('index.php?option=com_tools&view=itemcategory&id='.(int) $item->id);
+			//$item->link = '<a class="pdf" onclick="document.getElementById(\'loginModal\').style.display=\'block\'" href="#inner_page">See more</a>';
+			$item->link = '<a class="pdf" id="tool_'.$item->id.'" href="#inner_page">See more</a>';
 		}
 
 		// Check for errors.

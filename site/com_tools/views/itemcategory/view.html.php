@@ -48,6 +48,7 @@ class ToolsViewItemCategory extends JViewLegacy
 		$this->params = $app->getParams('com_tools');
 
 		$this->item->tools = self::getTools($this->item->id);
+		$this->item->subitems = self::getSubItems($this->item->id);
 
 		if (!empty($this->item))
 		{
@@ -78,6 +79,26 @@ class ToolsViewItemCategory extends JViewLegacy
 		$this->_prepareDocument();
 
 		parent::display($tpl);
+	}public function getSubItems($id)
+	{
+		$db    = JFactory::getDbo();
+		$query = $db->getQuery(true);
+
+		$query
+			->select('a.*')
+			->from($db->quoteName('#__tools_categories', 'a'))
+			->where('a.parent_id = '.$id)
+			->order('a.id DESC');
+
+		$db->setQuery($query);
+
+		$result = $db->loadObjectList();
+
+		foreach ($result as $item) {
+			$item->tools = self::getTools($item->id);
+		}
+
+		return $result;
 	}
 
 	public function getTools($id)
@@ -88,7 +109,8 @@ class ToolsViewItemCategory extends JViewLegacy
 			$query
 				->select('a.*')
 				->from($db->quoteName('#__tools', 'a'))
-				->where('a.tool_catid = '.$id);
+				->where('a.tool_catid = '.$id)
+				->order('a.id DESC');
 
 			$db->setQuery($query);
 
