@@ -109,10 +109,10 @@ $sortFields = $this->getSortFields();
 							   <label for="checkall" class="blanklabel">&nbsp;</label>
 					</th>
 				<th class='left'>
-				<?php echo JHtml::_('searchtools.sort',  'COM_TOOLS_ITEMS_TITLE', 'a.`title`', $listDirn, $listOrder); ?>
+				<?php echo JHtml::_('searchtools.sort',  'Category', 'a.`tool_catid`', $listDirn, $listOrder); ?>
 				</th>
 				<th class='left'>
-				<?php echo JHtml::_('searchtools.sort',  'COM_TOOLS_ITEMS_DESCRIPTION', 'a.`description`', $listDirn, $listOrder); ?>
+				<?php echo JHtml::_('searchtools.sort',  'E-Mail', 'a.`email`', $listDirn, $listOrder); ?>
 				</th>
 
 					<?php if (isset($this->items[0]->state)): ?>
@@ -160,16 +160,16 @@ $sortFields = $this->getSortFields();
 				<?php if (isset($item->checked_out) && $item->checked_out && ($canEdit || $canChange)) : ?>
 					<?php echo JHtml::_('jgrid.checkedout', $i, $item->uEditor, $item->checked_out_time, 'logs.', $canCheckin); ?>
 				<?php endif; ?>
-				<?php if ($canEdit) : ?>
+				<?php /*if ($canEdit) : ?>
 					<a href="<?php echo JRoute::_('index.php?option=com_tools&task=item.edit&id='.(int) $item->id); ?>">
-					<?php echo $this->escape($item->title); ?></a>
-				<?php else : ?>
-					<?php echo $this->escape($item->title); ?>
-				<?php endif; ?>
+					<?php echo $this->escape($item->category_title); ?></a>
+				<?php else :*/ ?>
+					<?php echo $this->escape($item->category_title); ?>
+				<?php /*endif;*/ ?>
 
 				</td>				<td>
 
-					<?php echo $item->description; ?>
+					<?php echo $item->email; ?>
 				</td>
 						<?php if (isset($this->items[0]->state)): ?>
 							<td class="center">

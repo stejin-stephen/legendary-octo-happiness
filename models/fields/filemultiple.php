@@ -36,7 +36,7 @@ class JFormFieldFileMultiple extends JFormField
 	protected function getInput()
 	{
 		// Initialize variables.
-		$html = '<input type="file" name="' . $this->name . '[]" multiple >';
+		$html = '<input type="file" name="' . $this->name . '[]" multiple>';
 
 		return $html;
 	}

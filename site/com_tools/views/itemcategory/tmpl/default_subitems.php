@@ -9,50 +9,12 @@
 // No direct access
 defined('_JEXEC') or die;
 
-$my_page_title = $this->escape($this->item->title);
-$page_title_parts = explode(" ", $my_page_title, 2);
+JHtml::addIncludePath(JPATH_COMPONENT . '/helpers/html');
+JHtml::_('bootstrap.tooltip');
+JHtml::_('behavior.multiselect');
+JHtml::_('formbehavior.chosen', 'select');
 
-if (count($page_title_parts)>0) {
-	$new_page_title = $page_title_parts[0] . " " . '<span class="blue">' . $page_title_parts[1] . '</span>';
-} else {
-	$new_page_title = $page_title_parts;
-}
-
-$canEdit = JFactory::getUser()->authorise('core.edit', 'com_tools.' . $this->item->id);
-
-if (!$canEdit && JFactory::getUser()->authorise('core.edit.own', 'com_tools' . $this->item->id))
-{
-	$canEdit = JFactory::getUser()->id == $this->item->created_by;
-}
 ?>
-
-<div id="publication" class="column">
-	<div class="column nomargin content rightpad">
-		<div class="title nomargin column">
-			<h3><?php echo $new_page_title; ?></h3>
-		</div>
-	<div class="intro"><?php echo $this->item->description; ?><br /></div>
-	</div>
-</div>
-
-<?php echo $this->loadTemplate('items');
-
-foreach($this->item->subitems as $sub): ?>
-
-<div class="dynamic_content">
-	<div class="title  nomargin">
-
-		<h3 class="contentheading">
-				<?php
-			$title = explode(" ",$this->escape($sub->title), 2);
-			echo $title[0]." <span class='red'>".$title[1]."</span>";
-		?></h3>
-
-		<div itemprop="articleBody">
-			<?= $sub->description; ?>
-		</div>
-	</div>
-</div>
 
     <div class="listing column c0 nomargin">
         <div id="brochur_reports">
@@ -70,7 +32,7 @@ foreach($this->item->subitems as $sub): ?>
                                 <dt><img alt="Preview" name="mem_image" src="<?php echo $item->cat->image; ?>"></dt>
                                 <dd>
                                     <p><?php echo $item->introtext; ?></p>
-                                    <span class="dwn"><a class="pdf" href="<?php echo $item->link; ?>"><?php echo $item->showtext; ?></a></span>
+                                    <span class="dwn"><a class="pdf" href="<?php echo $item->link; ?>"><?php echo $item->showtext; ?>sdsd</a></span>
                                 </dd>
                             </dl>
                         </li>
@@ -82,6 +44,3 @@ foreach($this->item->subitems as $sub): ?>
             </div>
         </div>
     </div>
-
-
-<?php endforeach; ?>

@@ -136,6 +136,8 @@ class ToolsViewLogs extends JViewLegacy
 		{
 			JToolBarHelper::preferences('com_tools');
 		}
+		
+		JToolBarHelper::custom('logs.Export2Excel', 'download.png', 'download_f2.png', 'Export', false);
 
 		// Set sidebar action - New in 3.0
 		JHtmlSidebar::setAction('index.php?option=com_tools&view=logs');
@@ -150,9 +152,8 @@ class ToolsViewLogs extends JViewLegacy
 	{
 		return array(
 			'a.`id`' => JText::_('JGRID_HEADING_ID'),
-			'a.`title`' => JText::_('COM_TOOLS_ITEMS_TITLE'),
-			'a.`description`' => JText::_('COM_TOOLS_ITEMS_DESCRIPTION'),
-			'a.`type`' => JText::_('COM_TOOLS_ITEMS_TYPE'),
+			'a.`tool_catid`' => JText::_('COM_TOOLS_ITEMS_TITLE'),
+			'a.`email`' => JText::_('COM_TOOLS_ITEMS_DESCRIPTION'),
 			'a.`ordering`' => JText::_('JGRID_HEADING_ORDERING'),
 			'a.`state`' => JText::_('JSTATUS'),
 		);

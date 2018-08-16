@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @version    1.0
  * @package    Com_Tools
@@ -7,318 +6,576 @@
  * @copyright  2018
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
+
 // No direct access.
 defined('_JEXEC') or die;
+use Joomla\Registry\Registry;
 
-jimport('joomla.application.component.modelitem');
-jimport('joomla.event.dispatcher');
-
-//use Joomla\CMS\Factory;
-use Joomla\Utilities\ArrayHelper;
+jimport('joomla.application.component.modeladmin');
 
 /**
  * Tools model.
  *
  * @since  1.6
  */
-class ToolsModelItemCategory extends JModelItem
+class ToolsModelItemCategory extends JModelAdmin
 {
-    public $_item;
-
-        
-    
-        
 	/**
-	 * Method to auto-populate the model state.
-	 *
-	 * Note. Calling getState in this method will result in recursion.
-	 *
-	 * @return void
-	 *
+	 * @var      string    The prefix to use with controller messages.
 	 * @since    1.6
-	 *
 	 */
-	protected function populateState()
+	protected $text_prefix = 'COM_TOOLS';
+
+	/**
+	 * @var   	string  	Alias to manage history control
+	 * @since   3.2
+	 */
+	public $typeAlias = 'com_tools.itemcategory';
+
+	/**
+	 * @var null  Item data
+	 * @since  1.6
+	 */
+	protected $item = null;
+
+	/**
+	 * Method to test whether a record can be deleted.
+	 *
+	 * @param   object  $record  A record object.
+	 *
+	 * @return  boolean  True if allowed to delete the record. Defaults to the permission for the component.
+	 *
+	 * @since   1.6
+	 */
+	protected function canDelete($record)
 	{
-		$app  = JFactory::getApplication('com_tools');
-		$user = JFactory::getUser();
-
-		// Check published state
-		if ((!$user->authorise('core.edit.state', 'com_tools')) && (!$user->authorise('core.edit', 'com_tools')))
+		if (!empty($record->id))
 		{
-			$this->setState('filter.published', 1);
-			$this->setState('filter.archived', 2);
+			if ($record->state != -2)
+			{
+				return;
+			}
+			$user = JFactory::getUser();
+
+			if ($record->catid)
+			{
+				return $user->authorise('core.delete', 'com_tools.category.'.(int) $record->catid);
+			}
+			else
+			{
+				return parent::canDelete($record);
+			}
 		}
-
-		// Load state from the request userState on edit or from the passed variable on default
-		if (JFactory::getApplication()->input->get('layout') == 'edit')
-		{
-			$id = JFactory::getApplication()->getUserState('com_tools.edit.itemcategory.id');
-		}
-		else
-		{
-			$id = JFactory::getApplication()->input->get('id');
-			JFactory::getApplication()->setUserState('com_tools.edit.itemcategory.id', $id);
-		}
-
-		$this->setState('itemcategory.id', $id);
-
-		// Load the parameters.
-		$params       = $app->getParams();
-		$params_array = $params->toArray();
-
-		if (isset($params_array['item_id']))
-		{
-			$this->setState('itemcategory.id', $params_array['item_id']);
-		}
-
-		$this->setState('params', $params);
 	}
 
 	/**
-	 * Method to get an object.
+	 * Method to test whether a record can be deleted.
 	 *
-	 * @param   integer $id The id of the object to get.
+	 * @param   object  $record  A record object.
 	 *
-	 * @return  mixed    Object on success, false on failure.
-     *
-     * @throws Exception
+	 * @return  boolean  True if allowed to change the state of the record. Defaults to the permission for the component.
+	 *
+	 * @since   1.6
 	 */
-	public function getItem($id = null)
+	protected function canEditState($record)
 	{
-            if ($this->_item === null)
-            {
-                $this->_item = false;
+		$user = JFactory::getUser();
 
-                if (empty($id))
-                {
-                    $id = $this->getState('itemcategory.id');
-                }
+		if (!empty($record->catid))
+		{
+			return $user->authorise('core.edit.state', 'com_tools.category.'.(int) $record->catid);
+		}
+		else
+		{
+			return parent::canEditState($record);
+		}
+	}
 
-                // Get a level row instance.
-                $table = $this->getTable();
 
-                // Attempt to load the row.
-                if ($table->load($id))
-                {
-                    
-
-                    // Check published state.
-                    if ($published = $this->getState('filter.published'))
-                    {
-                        if (isset($table->state) && $table->state != $published)
-                        {
-                            throw new Exception(JText::_('COM_TOOLS_ITEM_NOT_LOADED'), 403);
-                        }
-                    }
-
-                    // Convert the JTable to a clean JObject.
-                    $properties  = $table->getProperties(1);
-                    $this->_item = ArrayHelper::toObject($properties, 'JObject');
-
-                    
-                } 
-            }
         
-            
-
-		if (isset($this->_item->catid) && $this->_item->catid != '')
-		{
-			if (is_object($this->_item->catid))
-			{
-				$this->_item->catid = ArrayHelper::fromObject($this->_item->catid);
-			}
-
-			if (is_array($this->_item->catid))
-			{
-				$this->_item->catid = implode(',', $this->_item->catid);
-			}
-
-			$db    = JFactory::getDbo();
-			$query = $db->getQuery(true);
-
-			$query
-				->select($db->quoteName('title'))
-				->from($db->quoteName('#__categories'))
-				->where('FIND_IN_SET(' . $db->quoteName('id') . ', ' . $db->quote($this->_item->catid) . ')');
-
-			$db->setQuery($query);
-
-			$result = $db->loadColumn();
-
-			$this->_item->catid = !empty($result) ? implode(', ', $result) : '';
-		}
-
-		if (!empty($this->_item->type))
-		{
-			$this->_item->type = JText::_('COM_TOOLS_ITEMS_TYPE_OPTION_' . $this->_item->type);
-		}
-
-		if (isset($this->_item->created_by))
-		{
-			$this->_item->created_by_name = JFactory::getUser($this->_item->created_by)->name;
-		}
-
-		if (isset($this->_item->modified_by))
-		{
-			$this->_item->modified_by_name = JFactory::getUser($this->_item->modified_by)->name;
-		}
-
-            return $this->_item;
-        }
-
+        
+        
+        
+        
 	/**
-	 * Get an instance of JTable class
+	 * Returns a reference to the a Table object, always creating it.
 	 *
-	 * @param   string $type   Name of the JTable class to get an instance of.
-	 * @param   string $prefix Prefix for the table class name. Optional.
-	 * @param   array  $config Array of configuration values for the JTable object. Optional.
+	 * @param   string  $type    The table type to instantiate
+	 * @param   string  $prefix  A prefix for the table class name. Optional.
+	 * @param   array   $config  Configuration array for model. Optional.
 	 *
-	 * @return  JTable|bool JTable if success, false on failure.
+	 * @return    JTable    A database object
+	 *
+	 * @since    1.6
 	 */
 	public function getTable($type = 'ItemCategory', $prefix = 'ToolsTable', $config = array())
 	{
-		$this->addTablePath(JPATH_ADMINISTRATOR . '/components/com_tools/tables');
-
 		return JTable::getInstance($type, $prefix, $config);
 	}
 
 	/**
-	 * Get the id of an item by alias
+	 * Method to get the record form.
 	 *
-	 * @param   string $alias Item alias
+	 * @param   array    $data      An optional array of data for the form to interogate.
+	 * @param   boolean  $loadData  True if the form is to load its own data (default case), false if not.
 	 *
-	 * @return  mixed
+	 * @return  JForm  A JForm object on success, false on failure
+	 *
+	 * @since    1.6
 	 */
-	public function getItemIdByAlias($alias)
+	public function getForm($data = array(), $loadData = true)
 	{
-            $table      = $this->getTable();
-            $properties = $table->getProperties();
-            $result     = null;
+            // Initialise variables.
+            $app = JFactory::getApplication();
 
-            if (key_exists('alias', $properties))
+            // Get the form.
+            $form = $this->loadForm(
+                    'com_tools.itemcategory', 'itemcategory',
+                    array('control' => 'jform',
+                            'load_data' => $loadData
+                    )
+            );
+
+            
+
+            if (empty($form))
             {
-                $table->load(array('alias' => $alias));
-                $result = $table->id;
+                return false;
             }
-            
-                return $result;
-            
+
+		// Determine correct permissions to check.
+		if ($this->getState('tools.id'))
+		{
+			// Existing record. Can only edit in selected categories.
+			$form->setFieldAttribute('catid', 'action', 'core.edit');
+		}
+		else
+		{
+			// New record. Can only create in selected categories.
+			$form->setFieldAttribute('catid', 'action', 'core.create');
+		}
+
+		// Modify the form based on access controls.
+		if (!$this->canEditState((object) $data))
+		{
+			// Disable fields for display.
+			$form->setFieldAttribute('ordering', 'disabled', 'true');
+			$form->setFieldAttribute('state', 'disabled', 'true');
+			//$form->setFieldAttribute('publish_up', 'disabled', 'true');
+			//$form->setFieldAttribute('publish_down', 'disabled', 'true');
+
+			// Disable fields while saving.
+			// The controller has already verified this is a record you can edit.
+			$form->setFieldAttribute('ordering', 'filter', 'unset');
+			$form->setFieldAttribute('state', 'filter', 'unset');
+			//$form->setFieldAttribute('publish_up', 'filter', 'unset');
+			//$form->setFieldAttribute('publish_down', 'filter', 'unset');
+		}
+
+            return $form;
 	}
 
 	/**
-	 * Method to check in an item.
+	 * Method to get the data that should be injected in the form.
 	 *
-	 * @param   integer $id The id of the row to check out.
-	 *
-	 * @return  boolean True on success, false on failure.
+	 * @return   mixed  The data for the form.
 	 *
 	 * @since    1.6
 	 */
-	public function checkin($id = null)
+	protected function loadFormData()
 	{
-		// Get the id.
-		$id = (!empty($id)) ? $id : (int) $this->getState('itemcategory.id');
-                
-		if ($id)
-		{
-			// Initialise the table
-			$table = $this->getTable();
+		// Check the session for previously entered form data.
+		$data = JFactory::getApplication()->getUserState('com_tools.edit.itemcategory.data', array());
 
-			// Attempt to check the row in.
-			if (method_exists($table, 'checkin'))
+		if (empty($data))
+		{
+			if ($this->item === null)
 			{
-				if (!$table->checkin($id))
+				$this->item = $this->getItem();
+			}
+
+			$data = $this->item;
+                        
+
+			// Support for multiple or not foreign key field: catid
+			$array = array();
+
+			foreach ((array) $data->catid as $value)
+			{
+				if (!is_array($value))
 				{
-					return false;
+					$array[] = $value;
+				}
+			}
+
+			$data->catid = $array;
+
+			// Support for multiple or not foreign key field: type
+			//$array = array();
+			//
+			//foreach ((array) $data->type as $value)
+			//{
+			//	if (!is_array($value))
+			//	{
+			//		$array[] = $value;
+			//	}
+			//}
+			//
+			//$data->type = $array;
+		}
+
+		return $data;
+	}
+
+	/**
+	 * Method to get a single record.
+	 *
+	 * @param   integer  $pk  The id of the primary key.
+	 *
+	 * @return  mixed    Object on success, false on failure.
+	 *
+	 * @since    1.6
+	 */
+	public function getItem($pk = null)
+	{
+            
+            if ($item = parent::getItem($pk))
+            {
+                // Do any procesing on fields here if needed
+				if ($item AND property_exists($item, 'image'))
+		{
+			$registry = new Registry($item->image);
+			$item->imageinfo = $registry->toArray();
+		}
+            }
+		
+		// Load associated contact items
+		$app = JFactory::getApplication();
+		$assoc = JLanguageAssociations::isEnabled();
+
+		if ($assoc)
+		{ 
+			$item->associations = array();
+
+			if ($item->id != null)
+			{
+				$associations = JLanguageAssociations::getAssociations('com_tools', '#__tools', 'com_tools.itemcategory', $item->id);
+
+				foreach ($associations as $tag => $association)
+				{
+					$item->associations[$tag] = $association->id;
 				}
 			}
 		}
 
-		return true;
-                
+            return $item;
+            
 	}
 
 	/**
-	 * Method to check out an item for editing.
+	 * Method to duplicate an Item
 	 *
-	 * @param   integer $id The id of the row to check out.
+	 * @param   array  &$pks  An array of primary key IDs.
 	 *
-	 * @return  boolean True on success, false on failure.
+	 * @return  boolean  True if successful.
+	 *
+	 * @throws  Exception
+	 */
+	public function duplicate(&$pks)
+	{
+		$user = JFactory::getUser();
+
+		// Access checks.
+		if (!$user->authorise('core.create', 'com_tools'))
+		{
+			throw new Exception(JText::_('JERROR_CORE_CREATE_NOT_PERMITTED'));
+		}
+
+		$dispatcher = JEventDispatcher::getInstance();
+		$context    = $this->option . '.' . $this->name;
+
+		// Include the plugins for the save events.
+		JPluginHelper::importPlugin($this->events_map['save']);
+
+		$table = $this->getTable();
+
+		foreach ($pks as $pk)
+		{
+                    
+			if ($table->load($pk, true))
+			{
+				// Reset the id to create a new record.
+				$table->id = 0;
+
+				if (!$table->check())
+				{
+					throw new Exception($table->getError());
+				}
+				
+				if (!empty($table->document))
+				{
+					if (is_array($table->document))
+					{
+						$table->document = implode(',', $table->document);
+					}
+				}
+				else
+				{
+					$table->document = '';
+				}
+
+
+				// Trigger the before save event.
+				$result = $dispatcher->trigger($this->event_before_save, array($context, &$table, true));
+
+				if (in_array(false, $result, true) || !$table->store())
+				{
+					throw new Exception($table->getError());
+				}
+
+				// Trigger the after save event.
+				$dispatcher->trigger($this->event_after_save, array($context, &$table, true));
+			}
+			else
+			{
+				throw new Exception($table->getError());
+			}
+                    
+		}
+
+		// Clean cache
+		$this->cleanCache();
+
+		return true;
+	}
+
+	/**
+	 * Prepare and sanitise the table prior to saving.
+	 *
+	 * @param   JTable  $table  Table Object
+	 *
+	 * @return void
 	 *
 	 * @since    1.6
 	 */
-	public function checkout($id = null)
+	protected function prepareTable($table)
 	{
-		// Get the user id.
-		$id = (!empty($id)) ? $id : (int) $this->getState('itemcategory.id');
+		jimport('joomla.filter.output');
+		
+		$date = JFactory::getDate();
+		$user = JFactory::getUser();
 
-                
-		if ($id)
+		$table->title = htmlspecialchars_decode($table->title, ENT_QUOTES);
+		$table->alias = JApplication::stringURLSafe($table->alias);
+
+		if (empty($table->alias))
 		{
-			// Initialise the table
-			$table = $this->getTable();
+			$table->alias = JApplication::stringURLSafe($table->title);
+		}
 
-			// Get the current user object.
-			$user = JFactory::getUser();
-
-			// Attempt to check the row out.
-			if (method_exists($table, 'checkout'))
+		if (empty($table->id))
+		{
+			// Set ordering to the last item if not set
+			if (@$table->ordering === '')
 			{
-				if (!$table->checkout($user->get('id'), $id))
+				$db = JFactory::getDbo();
+				$db->setQuery('SELECT MAX(ordering) FROM #__tools');
+				$max             = $db->loadResult();
+				$table->ordering = $max + 1;
+			}
+			else
+			{
+				// Set the values
+				$table->modified    = $date->toSql();
+				$table->modified_by = $user->get('id');
+			}
+		}
+	}
+	
+	protected function preprocessForm(JForm $form, $data, $group = 'content')
+	{
+		// Association content items
+		$app = JFactory::getApplication();
+		$assoc = JLanguageAssociations::isEnabled();
+
+		if ($assoc)
+		{
+			$languages = JLanguageHelper::getLanguages('lang_code');
+			$addform = new SimpleXMLElement('<form />');
+			$fields = $addform->addChild('fields');
+			$fields->addAttribute('name', 'associations');
+			$fieldset = $fields->addChild('fieldset');
+			$fieldset->addAttribute('name', 'item_associations');
+			$fieldset->addAttribute('description', 'COM_NEWS_ITEM_ASSOCIATIONS_FIELDSET_DESC');
+			$add = false;
+
+			foreach ($languages as $tag => $language)
+			{
+				if (empty($data->language) || $tag != $data->language)
 				{
-					return false;
+					$add = true;
+					$field = $fieldset->addChild('field');
+					$field->addAttribute('name', $tag);
+					$field->addAttribute('type', 'modal_news');
+					$field->addAttribute('language', $tag);
+					$field->addAttribute('label', $language->title);
+					$field->addAttribute('translate_label', 'false');
+					$field->addAttribute('edit', 'true');
+					$field->addAttribute('clear', 'true');
 				}
+			}
+
+			if ($add)
+			{ 
+				$form->load($addform, false);
 			}
 		}
 
-		return true;
-                
+		parent::preprocessForm($form, $data, $group);
 	}
 
 	/**
-	 * Publish the element
+	 * Method to change the title & alias.
 	 *
-	 * @param   int $id    Item id
-	 * @param   int $state Publish state
+	 * @param   integer  $category_id  The id of the parent.
+	 * @param   string   $alias        The alias.
+	 * @param   string   $name         The title.
 	 *
-	 * @return  boolean
+	 * @return  array  Contains the modified title and alias.
+	 *
+	 * @since   3.1
 	 */
-	public function publish($id, $state)
+	protected function generateNewTitle($category_id, $alias, $name)
 	{
-		$table = $this->getTable();
-                
-		$table->load($id);
-		$table->state = $state;
-
-		return $table->store();
-                
-	}
-
-	/**
-	 * Method to delete an item
-	 *
-	 * @param   int $id Element id
-	 *
-	 * @return  bool
-	 */
-	public function delete($id)
-	{
+		// Alter the title & alias
 		$table = $this->getTable();
 
-                
-                    return $table->delete($id);
-                
-	}
-
-	public function getAliasFieldNameByView($view)
-	{
-		switch ($view)
+		while ($table->load(array('alias' => $alias, 'catid' => $category_id)))
 		{
-			case 'itemcategory':
-			case 'itemform':
-				return 'alias';
-			break;
+			if ($name == $table->title)
+			{
+				$name = JString::increment($name);
+			}
+
+			$alias = JString::increment($alias, 'dash');
 		}
+
+		return array($name, $alias);
+	}
+
+	/**
+	 * Method to save the form data.
+	 *
+	 * @param   array  $data  The form data.
+	 *
+	 * @return  boolean  True on success.
+	 *
+	 * @since	3.1
+	 */
+	public function save($data)
+	{
+		$app = JFactory::getApplication();
+
+		// Alter the title for save as copy
+		if ($app->input->get('task') == 'save2copy')
+		{
+			list($name, $alias) = $this->generateNewTitle($data['catid'], $data['alias'], $data['title']);
+			$data['title']	= $name;
+			$data['alias']	= $alias;
+			$data['state']	= 0;
+		}
+
+		//return parent::save($data);
+		
+		if (parent::save($data))
+		{
+			$assoc = JLanguageAssociations::isEnabled();
+
+			if ($assoc)
+			{
+				$id = (int) $this->getState($this->getName() . '.id');
+				$item = $this->getItem($id);
+
+				// Adding self to the association
+				$associations = $data['associations'];
+
+				foreach ($associations as $tag => $id)
+				{
+					if (empty($id))
+					{
+						unset($associations[$tag]);
+					}
+				}
+
+				// Detecting all item menus
+				$all_language = $item->language == '*';
+
+				if ($all_language && !empty($associations))
+				{
+					JError::raiseNotice(403, JText::_('COM_NEWS_ERROR_ALL_LANGUAGE_ASSOCIATED'));
+				}
+
+				$associations[$item->language] = $item->id;
+
+				// Deleting old association for these items
+				$db = JFactory::getDbo();
+				$query = $db->getQuery(true)
+					->delete('#__associations')
+					->where('context=' . $db->quote('com_tools.itemcategory'))
+					->where('id IN (' . implode(',', $associations) . ')');
+				$db->setQuery($query);
+				$db->execute();
+
+				if ($error = $db->getErrorMsg())
+				{
+					$this->setError($error);
+
+					return false;
+				}
+
+				if (!$all_language && count($associations))
+				{
+					// Adding new association for these items
+					$key = md5(json_encode($associations));
+					$query->clear()
+						->insert('#__associations');
+
+					foreach ($associations as $id)
+					{
+						$query->values($id . ',' . $db->quote('com_tools.itemcategory') . ',' . $db->quote($key));
+					}
+
+					$db->setQuery($query);
+					$db->execute();
+
+					if ($error = $db->getErrorMsg())
+					{
+						$this->setError($error);
+
+						return false;
+					}
+				}
+			}
+
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * A protected method to get a set of ordering conditions.
+	 *
+	 * @param   JTable  $table  A JTable object.
+	 *
+	 * @return  array  An array of conditions to add to ordering queries.
+	 *
+	 * @since   1.6
+	 */
+	protected function getReorderConditions($table)
+	{
+		$condition = array();
+		$condition[] = 'catid = ' . (int) $table->catid;
+
+		return $condition;
 	}
 }

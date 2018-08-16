@@ -104,4 +104,53 @@ class ToolsControllerLogs extends JControllerAdmin
 		// Close the application
 		JFactory::getApplication()->close();
 	}
+	
+	public function Export2Excel()
+	{
+		$db = JFactory::getDbo();
+		$query = $db->getQuery(true);
+		$query->select(array('a.email', 'b.title as category', 'a.created'));
+		$query->from($db->quoteName('#__tools_log', 'a'));
+		$query->join('INNER', $db->quoteName('#__tools_categories', 'b') .
+				' ON (' . $db->quoteName('a.tool_catid') . ' = ' . $db->quoteName('b.id') . ')');
+		$db->setQuery($query);
+		$results = $db->loadObjectList();
+		
+		$letters = array("A", "B", "C", "D"); $i = 0;
+		
+		foreach($results[0] as $key => $row){
+			$keys[] = $key;
+		}
+		$filename = 'Logs-'.date('Y_m_d_H_i_s').'.xlsx' ;
+		
+		//load PHPExcel library
+		require_once(JPATH_ROOT. '/PHPExcel.php');
+		$objPHPExcel = new PHPExcel();
+		
+		$objPHPExcel->setActiveSheetIndex(0)->setCellValue($letters[$i].'1', "Sl. No.");
+		
+		foreach($keys as $k) {
+			$i++;
+			$objPHPExcel->setActiveSheetIndex(0)->setCellValue($letters[$i].'1', ucfirst($keys[$i-1]));
+		}
+		$k = 0;
+		foreach($results as $row){
+			
+			for($j = 0;$j<count($keys);$j++) { $num = $k+2;
+				$objPHPExcel->setActiveSheetIndex(0)->setCellValue($letters[$j+1].$num, $results[$k]->$keys[$j]);
+			}
+			$objPHPExcel->setActiveSheetIndex(0)->setCellValue('A'.$num, $num-1);
+			$k++;
+		}
+
+		
+		header("Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+		header('Content-Disposition: attachment;filename="' . $filename . '"');
+		header("Cache-Control: max-age=0");
+		header("Cache-Control: cache, must-revalidate");
+		header("Pragma: public");
+		$objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, "Excel2007");
+		$objWriter->save("php://output");
+		exit;
+	}
 }

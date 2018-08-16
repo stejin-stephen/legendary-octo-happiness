@@ -29,7 +29,7 @@ class JFormFieldModifiedby extends JFormField
 	/**
 	 * Method to get the field input markup.
 	 *
-	 * @return   string  The field input markup.
+	 * @return    string    The field input markup.
 	 *
 	 * @since    1.6
 	 */
@@ -39,7 +39,6 @@ class JFormFieldModifiedby extends JFormField
 		$html   = array();
 		$user   = JFactory::getUser();
 		$html[] = '<input type="hidden" name="' . $this->name . '" value="' . $user->id . '" />';
-
 		if (!$this->hidden)
 		{
 			$html[] = "<div>" . $user->name . " (" . $user->username . ")</div>";

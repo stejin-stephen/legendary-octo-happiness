@@ -120,6 +120,7 @@ class ToolsViewItemCategory extends JViewLegacy
 				$item->cat = json_decode($item->image);
 				$item->introtext = truncateHelper::truncate($item->description,100,array('html' => true,'exact' => false, 'ending' => '...'));
 				$item->showtext = $item->type == 3 ? 'Download' : 'View';
+				$item->link = $item->type == 3 ? JRoute::_("index.php?option=com_attachments&view=attachments&id=" . $attachment->did) : 'View';
 			}
 			//var_dump($result); exit;
 			return $result;

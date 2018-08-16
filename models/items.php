@@ -1,16 +1,13 @@
 <?php
 
 /**
- * @version    CVS: 1.0
+ * @version    1.0
  * @package    Com_Tools
  * @author      <>
  * @copyright  2018
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
-
 defined('_JEXEC') or die;
-
-//use Joomla\CMS\Factory;
 
 jimport('joomla.application.component.modellist');
 
@@ -21,42 +18,46 @@ jimport('joomla.application.component.modellist');
  */
 class ToolsModelItems extends JModelList
 {
-	/**
-	 * Constructor.
-	 *
-	 * @param   array  $config  An optional associative array of configuration settings.
-	 *
-	 * @see        JController
-	 * @since      1.6
-	 */
+    
+        
+/**
+	* Constructor.
+	*
+	* @param   array  $config  An optional associative array of configuration settings.
+	*
+	* @see        JController
+	* @since      1.6
+	*/
 	public function __construct($config = array())
 	{
 		if (empty($config['filter_fields']))
 		{
 			$config['filter_fields'] = array(
-				'id', 'a.id',
-				'catid', 'a.catid',
-				'title', 'a.title',
-				'alias', 'a.alias',
-				'description', 'a.description',
-				'image', 'a.image',
-				'document', 'a.document',
-				'type', 'a.type',
-				'ordering', 'a.ordering',
-				'state', 'a.state',
-				'access', 'a.access',
-				'language', 'a.language',
-				'created_by', 'a.created_by',
-				'created', 'a.created',
-				'modified_by', 'a.modified_by',
-				'modified', 'a.modified',
+				'id', 'a.`id`',
+				'catid', 'a.`catid`',
+				'title', 'a.`title`',
+				'alias', 'a.`alias`',
+				'description', 'a.`description`',
+				'image', 'a.`image`',
+				'document', 'a.`document`',
+				'type', 'a.`type`',
+				'ordering', 'a.`ordering`',
+				'state', 'a.`state`',
+				'access', 'a.`access`',
+				'language', 'a.`language`',
+				'created_by', 'a.`created_by`',
+				'created', 'a.`created`',
+				'modified_by', 'a.`modified_by`',
+				'modified', 'a.`modified`',
 			);
 		}
 
 		parent::__construct($config);
 	}
 
+    
         
+    
         
 	/**
 	 * Method to auto-populate the model state.
@@ -69,46 +70,65 @@ class ToolsModelItems extends JModelList
 	 * @return void
 	 *
 	 * @throws Exception
-	 *
-	 * @since    1.6
 	 */
 	protected function populateState($ordering = null, $direction = null)
 	{
-            $app  = JFactory::getApplication();
-		$list = $app->getUserState($this->context . '.list');
+		// Initialise variables.
+		$app = JFactory::getApplication('administrator');
 
-		$ordering  = isset($list['filter_order'])     ? $list['filter_order']     : null;
-		$direction = isset($list['filter_order_Dir']) ? $list['filter_order_Dir'] : null;
+		// Load the filter state.
+		$search = $app->getUserStateFromRequest($this->context . '.filter.search', 'filter_search');
+		$this->setState('filter.search', $search);
 
-		$list['limit']     = (int) JFactory::getConfig()->get('list_limit', 20);
-		$list['start']     = $app->input->getInt('start', 0);
-		$list['ordering']  = $ordering;
-		$list['direction'] = $direction;
+		$accessId = $this->getUserStateFromRequest($this->context . '.filter.access', 'filter_access', null, 'int');
+		$this->setState('filter.access', $accessId);
 
-		$app->setUserState($this->context . '.list', $list);
-		$app->input->set('list', null);
+		$categoryId = $this->getUserStateFromRequest($this->context . '.filter.category_id', 'filter_category_id', '');
+		$this->setState('filter.category_id', $categoryId);
 
-            // List state information.
-            parent::populateState($ordering, $direction);
+		$language = $this->getUserStateFromRequest($this->context . '.filter.language', 'filter_language', '');
+		$this->setState('filter.language', $language);
 
-            $app = JFactory::getApplication();
+		$published = $app->getUserStateFromRequest($this->context . '.filter.state', 'filter_published', '', 'string');
+		$this->setState('filter.state', $published);
+		// Filtering type
+		$this->setState('filter.type', $app->getUserStateFromRequest($this->context.'.filter.type', 'filter_type', '', 'string'));
 
-            $ordering  = $app->getUserStateFromRequest($this->context . '.ordercol', 'filter_order', $ordering);
-            $direction = $app->getUserStateFromRequest($this->context . '.orderdirn', 'filter_order_Dir', $ordering);
 
-            $this->setState('list.ordering', $ordering);
-            $this->setState('list.direction', $direction);
+		// Load the parameters.
+		$params = JComponentHelper::getParams('com_tools');
+		$this->setState('params', $params);
 
-            $start = $app->getUserStateFromRequest($this->context . '.limitstart', 'limitstart', 0, 'int');
-            $limit = $app->getUserStateFromRequest($this->context . '.limit', 'limit', 0, 'int');
+		// List state information.
+		parent::populateState('a.title', 'asc');
+	}
 
-            if ($limit == 0)
-            {
-                $limit = $app->get('list_limit', 0);
-            }
+	/**
+	 * Method to get a store id based on model configuration state.
+	 *
+	 * This is necessary because the model is used by the component and
+	 * different modules that might need different sets of data or different
+	 * ordering requirements.
+	 *
+	 * @param   string  $id  A prefix for the store id.
+	 *
+	 * @return   string A store id.
+	 *
+	 * @since    1.6
+	 */
+	protected function getStoreId($id = '')
+	{
+		// Compile the store id.
+		$id .= ':' . $this->getState('filter.search');
+		$id .= ':' . $this->getState('filter.access');
+		$id .= ':' . $this->getState('filter.state');
+		$id .= ':' . $this->getState('filter.category_id');
+		$id .= ':' . $this->getState('filter.language');
+		$id .= ':' . $this->getState('filter.created');
 
-            $this->setState('list.limit', $limit);
-            $this->setState('list.start', $start);
+                
+                    return parent::getStoreId($id);
+                
 	}
 
 	/**
@@ -120,145 +140,142 @@ class ToolsModelItems extends JModelList
 	 */
 	protected function getListQuery()
 	{
-            // Create a new query object.
-            $db    = $this->getDbo();
-            $query = $db->getQuery(true);
+		// Create a new query object.
+		$db    = $this->getDbo();
+		$query = $db->getQuery(true);
+		$user = JFactory::getUser();
 
-            // Select the required fields from the table.
-            $query->select(
-                        $this->getState(
-                                'list.select', 'DISTINCT a.*'
-                        )
-                );
+		// Select the required fields from the table.
+		$query->select(
+			$this->getState(
+				'list.select', 'DISTINCT a.*'
+			)
+		);
+		$query->from('`#__tools` AS a');
+                
+		// Join over the users for the checked out user
+		$query->select("uc.name AS uEditor");
+		$query->join("LEFT", "#__users AS uc ON uc.id=a.checked_out");
 
-            $query->from('`#__tools` AS a');
-            
-		// Join over the users for the checked out user.
-		$query->select('uc.name AS uEditor');
-		$query->join('LEFT', '#__users AS uc ON uc.id=a.checked_out');
+		// Join over the access level field 'access'
+		$query->select('`access`.title AS `access`');
+		$query->join('LEFT', '#__viewlevels AS access ON `access`.id = a.`access`');
 
-		// Join over the created by field 'created_by'
-		$query->join('LEFT', '#__users AS created_by ON created_by.id = a.created_by');
+		// Join over the user field 'created_by'
+		$query->select('`created_by`.name AS `created_by`');
+		$query->join('LEFT', '#__users AS `created_by` ON `created_by`.id = a.`created_by`');
 
-		// Join over the created by field 'modified_by'
-		$query->join('LEFT', '#__users AS modified_by ON modified_by.id = a.modified_by');
-            
-		if (!JFactory::getUser()->authorise('core.edit', 'com_tools'))
+		// Join over the user field 'modified_by'
+		$query->select('`modified_by`.name AS `modified_by`');
+		$query->join('LEFT', '#__users AS `modified_by` ON `modified_by`.id = a.`modified_by`');
+
+		// Join over the language
+		$query->select('l.title AS language_title')
+			->join('LEFT', $db->quoteName('#__languages') . ' AS l ON l.lang_code = a.language');
+
+		// Join over the categories.
+		$query->select('c.title AS category_title')
+			->join('LEFT', '#__categories AS c ON c.id = a.catid');
+
+		// Filter by access level.
+		if ($access = $this->getState('filter.access'))
 		{
-			$query->where('a.state = 1');
+			$query->where('a.access = ' . (int) $access);
 		}
 
-            // Filter by search in title
-            $search = $this->getState('filter.search');
+		// Implement View Level Access
+		if (!$user->authorise('core.admin'))
+		{
+			$groups = implode(',', $user->getAuthorisedViewLevels());
+			$query->where('a.access IN (' . $groups . ')');
+		}
+                
 
-            if (!empty($search))
-            {
-                if (stripos($search, 'id:') === 0)
-                {
-                    $query->where('a.id = ' . (int) substr($search, 3));
-                }
-                else
-                {
-                    $search = $db->Quote('%' . $db->escape($search, true) . '%');
+		// Filter by published state
+		$published = $this->getState('filter.state');
+
+		if (is_numeric($published))
+		{
+			$query->where('a.state = ' . (int) $published);
+		}
+		elseif ($published === '')
+		{
+			$query->where('(a.state IN (0, 1))');
+		}
+
+		// Filter by category.
+		$categoryId = $this->getState('filter.category_id');
+		if (is_numeric($categoryId))
+		{
+			$query->where('a.catid = ' . (int) $categoryId);
+		}
+
+		// Filter by search in title
+		$search = $this->getState('filter.search');
+
+		if (!empty($search))
+		{
+			if (stripos($search, 'id:') === 0)
+			{
+				$query->where('a.id = ' . (int) substr($search, 3));
+			}
+			else
+			{
+				$search = $db->Quote('%' . $db->escape($search, true) . '%');
 				$query->where('( a.title LIKE ' . $search . '  OR  a.description LIKE ' . $search . ' )');
-                }
-            }
-            
+			}
+		}
+                
 
 		// Filtering type
 		$filter_type = $this->state->get("filter.type");
-		if ($filter_type != '') {
+
+		if ($filter_type !== null && (is_numeric($filter_type) || !empty($filter_type)))
+		{
 			$query->where("a.`type` = '".$db->escape($filter_type)."'");
 		}
+		
+		if(JRequest::getVar('tmpl')!='component'){
+			// Filter on the language.
+			$langsession 	= 	JFactory::getSession()->get('registry');
+			$lang 		= 	$langsession->get('application.lang');
+			
+			if($lang){
+				$query->where('a.language = "' . $lang .'" ');
+			}else if ($language = $this->getState('filter.language')){
+				$query->where('a.language = ' . $db->quote($language));
+			}
+			
+		}else{
+			$query->where('a.language = "' . JRequest::getVar('forcedLanguage') .'" ');
+		}
+                
+		// Add the list ordering clause.
+		$orderCol  = $this->state->get('list.ordering', "a.id");
+		$orderDirn = $this->state->get('list.direction', "ASC");
 
-            // Add the list ordering clause.
-            $orderCol  = $this->state->get('list.ordering', "a.id");
-            $orderDirn = $this->state->get('list.direction', "ASC");
+		if ($orderCol && $orderDirn)
+		{
+			$query->order($db->escape($orderCol . ' ' . $orderDirn));
+		}
 
-            if ($orderCol && $orderDirn)
-            {
-                $query->order($db->escape($orderCol . ' ' . $orderDirn));
-            }
-
-            return $query;
+		return $query;
 	}
 
 	/**
-	 * Method to get an array of data items
+	 * Get an array of data items
 	 *
-	 * @return  mixed An array of data on success, false on failure.
+	 * @return mixed Array of data items on success, false on failure.
 	 */
 	public function getItems()
 	{
 		$items = parent::getItems();
-		
-		foreach ($items as $item)
+                
+		foreach ($items as $oneItem)
 		{
-
-		if (isset($item->catid) && $item->catid != '')
-		{
-
-			$db    = JFactory::getDbo();
-			$query = $db->getQuery(true);
-
-			$query
-				->select($db->quoteName('title'))
-				->from($db->quoteName('#__categories'))
-				->where('FIND_IN_SET(' . $db->quoteName('id') . ', ' . $db->quote($item->catid) . ')');
-
-			$db->setQuery($query);
-
-			$result = $db->loadColumn();
-
-			$item->catid = !empty($result) ? implode(', ', $result) : '';
-		}
-
-			$item->type = JText::_('COM_TOOLS_ITEMS_TYPE_OPTION_' . strtoupper($item->type));
+					$oneItem->type = JText::_('COM_TOOLS_ITEMS_TYPE_OPTION_' . strtoupper($oneItem->type));
 		}
 
 		return $items;
-	}
-
-	/**
-	 * Overrides the default function to check Date fields format, identified by
-	 * "_dateformat" suffix, and erases the field if it's not correct.
-	 *
-	 * @return void
-	 */
-	protected function loadFormData()
-	{
-		$app              = JFactory::getApplication();
-		$filters          = $app->getUserState($this->context . '.filter', array());
-		$error_dateformat = false;
-
-		foreach ($filters as $key => $value)
-		{
-			if (strpos($key, '_dateformat') && !empty($value) && $this->isValidDate($value) == null)
-			{
-				$filters[$key]    = '';
-				$error_dateformat = true;
-			}
-		}
-
-		if ($error_dateformat)
-		{
-			$app->enqueueMessage(JText::_("COM_TOOLS_SEARCH_FILTER_DATE_FORMAT"), "warning");
-			$app->setUserState($this->context . '.filter', $filters);
-		}
-
-		return parent::loadFormData();
-	}
-
-	/**
-	 * Checks if a given date is valid and in a specified format (YYYY-MM-DD)
-	 *
-	 * @param   string  $date  Date to be checked
-	 *
-	 * @return bool
-	 */
-	private function isValidDate($date)
-	{
-		$date = str_replace('/', '-', $date);
-		return (date_create($date)) ? JFactory::getDate($date)->format("Y-m-d") : null;
 	}
 }

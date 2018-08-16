@@ -21,7 +21,7 @@ class JFormFieldTimeupdated extends JFormField
 	/**
 	 * The form field type.
 	 *
-	 * @var        string
+	 * @var      string
 	 * @since    1.6
 	 */
 	protected $type = 'timeupdated';
@@ -55,7 +55,7 @@ class JFormFieldTimeupdated extends JFormField
 			}
 		}
 
-		$time_updated = JFactory::getDate()->toSql();
+		$time_updated = JFactory::getDate('now', JFactory::getConfig()->get('offset'))->toSql(true);
 		$html[]       = '<input type="hidden" name="' . $this->name . '" value="' . $time_updated . '" />';
 
 		return implode($html);

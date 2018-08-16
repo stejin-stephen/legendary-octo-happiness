@@ -55,12 +55,14 @@ class ToolsControllerItemCategories extends ToolsController
 		$db->setQuery($query);
 		$row = $db->loadRow();
 
-		if($row)
-		$allowed_ids = array();
-		$session->set('logged_in', $email);
-		array_push($allowed_ids, $tool);
-		$session->set('allowed_ids', $allowed_ids);
-		echo $tool; exit;
+		if($row) {
+			$allowed_ids = $session->get('allowed_ids') ? $session->get('allowed_ids') : array();
+			$session->set('logged_in', $email);
+			array_push($allowed_ids, $tool);
+			$session->set('allowed_ids', $allowed_ids);
+			echo $tool;
+		}
+		exit;
 	}
 
 	public function saveLog()
@@ -83,8 +85,8 @@ class ToolsControllerItemCategories extends ToolsController
 		$obj->email = $logged_in;
 		$obj->ordering = $max_ordering+1;
 		$obj->state = 1;
-		$obj->created = time();
-		$obj->modified = time();
+		$obj->created = date("Y-m-d H:i:s");
+		$obj->modified = date("Y-m-d H:i:s");
 
 		$db->insertObject('#__tools_log', $obj);
 

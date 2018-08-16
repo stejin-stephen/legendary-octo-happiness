@@ -43,7 +43,7 @@ class JFormFieldCat extends JFormField {
 		$categories =$db->loadObjectList();
 
 
-		$category_select='<select id="'.$this->id.'" name="'.$this->name.'" class="custom-select hasCustomSelect" >';
+		$category_select='<select id="'.$this->id.'" name="'.$this->name.'" class="custom-select hasCustomSelect" required>';
 $category_select.='<option value="">- Select -</option>';
 			if(count($categories)>0){
 				foreach($categories as $category){

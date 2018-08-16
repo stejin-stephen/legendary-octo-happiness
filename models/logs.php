@@ -35,20 +35,11 @@ class ToolsModelLogs extends JModelList
 			$config['filter_fields'] = array(
 				'id', 'a.`id`',
 				'catid', 'a.`catid`',
-				'title', 'a.`title`',
-				'alias', 'a.`alias`',
-				'description', 'a.`description`',
-				'image', 'a.`image`',
-				'document', 'a.`document`',
-				'type', 'a.`type`',
+				'email', 'a.`email`',
+				'category', 'a.`tool_catid`',
 				'ordering', 'a.`ordering`',
 				'state', 'a.`state`',
-				'access', 'a.`access`',
-				'language', 'a.`language`',
-				'created_by', 'a.`created_by`',
-				'created', 'a.`created`',
-				'modified_by', 'a.`modified_by`',
-				'modified', 'a.`modified`',
+				'created', 'a.`created`'
 			);
 		}
 
@@ -175,8 +166,8 @@ class ToolsModelLogs extends JModelList
 		//	->join('LEFT', $db->quoteName('#__languages') . ' AS l ON l.lang_code = a.language');
 
 		// Join over the categories.
-		//$query->select('c.title AS category_title')
-		//	->join('LEFT', '#__categories AS c ON c.id = a.catid');
+		$query->select('c.title AS category_title')
+			->join('LEFT', '#__tools_categories AS c ON c.id = a.tool_catid');
 
 		// Filter by access level.
 		if ($access = $this->getState('filter.access'))
@@ -223,7 +214,7 @@ class ToolsModelLogs extends JModelList
 			else
 			{
 				$search = $db->Quote('%' . $db->escape($search, true) . '%');
-				$query->where('( a.title LIKE ' . $search . '  OR  a.description LIKE ' . $search . ' )');
+				$query->where('( a.email LIKE ' . $search . '  OR  c.title LIKE ' . $search . ' )');
 			}
 		}
                 
@@ -272,10 +263,10 @@ class ToolsModelLogs extends JModelList
 	{
 		$items = parent::getItems();
                 
-		foreach ($items as $oneItem)
-		{
-					$oneItem->type = JText::_('COM_TOOLS_ITEMS_TYPE_OPTION_' . strtoupper($oneItem->type));
-		}
+		//foreach ($items as $oneItem)
+		//{
+		//			$oneItem->type = JText::_('COM_TOOLS_ITEMS_TYPE_OPTION_' . strtoupper($oneItem->type));
+		//}
 
 		return $items;
 	}

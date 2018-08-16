@@ -112,8 +112,9 @@ $("#loginForm").on('submit', function(e){
 		type : 'POST',
 		url : 'index.php?option=com_tools&task=itemcategories.userLogin',
 		data : $('#loginForm').serialize(),
-		success: function(data) {
-      if(data) $('#tool_'+data).trigger("click");
+		success: function(resp) {
+			if(resp) $('#tool_'+resp).trigger("click");
+			else alert('Sorry, Invalid Username / Password');
 		}
 	});
 });
@@ -121,8 +122,8 @@ $("#loginForm").on('submit', function(e){
 $('[id^=tool]').click(function(){
 	var tool = this.id.split("_");
 	var ajaxcall = "index.php?option=com_tools&task=itemcategories.saveLog&toolId="+tool[1];
-	jQuery.post(ajaxcall,function(data){
-  if(data) window.location.href = data;
+	jQuery.post(ajaxcall,function(resp){
+  if(resp) window.location.href = resp;
   else modal.style.display='block';
 		$('#tool_id').val(tool[1]);
 	});

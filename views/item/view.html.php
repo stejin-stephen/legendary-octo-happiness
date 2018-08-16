@@ -3,7 +3,7 @@
 /**
  * @version    1.0
  * @package    Com_Tools
- * @author      <https://development.karakas.be/issues/5184>
+ * @author      <>
  * @copyright  2018
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
@@ -25,8 +25,6 @@ class ToolsViewItem extends JViewLegacy
 
 	protected $form;
 
-	protected $params;
-
 	/**
 	 * Display the view
 	 *
@@ -38,17 +36,9 @@ class ToolsViewItem extends JViewLegacy
 	 */
 	public function display($tpl = null)
 	{
-		$app  = JFactory::getApplication();
-		$user = JFactory::getUser();
-
-		$this->state  = $this->get('State');
-		$this->item   = $this->get('Item');
-		$this->params = $app->getParams('com_tools');
-
-		if (!empty($this->item))
-		{
-			$this->form = $this->get('Form');
-		}
+		$this->state = $this->get('State');
+		$this->item  = $this->get('Item');
+		$this->form  = $this->get('Form');
 
 		// Check for errors.
 		if (count($errors = $this->get('Errors')))
@@ -56,82 +46,67 @@ class ToolsViewItem extends JViewLegacy
 			throw new Exception(implode("\n", $errors));
 		}
 
-		if(!in_array($this->item->access, $user->getAuthorisedViewLevels())){
-                return JError::raiseError(403, JText::_('JERROR_ALERTNOAUTHOR'));
-            }
-        
-
-		if ($this->_layout == 'edit')
-		{
-			$authorised = $user->authorise('core.create', 'com_tools');
-
-			if ($authorised !== true)
-			{
-				throw new Exception(JText::_('JERROR_ALERTNOAUTHOR'));
-			}
-		}
-
-		$this->_prepareDocument();
-
+		$this->addToolbar();
 		parent::display($tpl);
 	}
 
 	/**
-	 * Prepares the document
+	 * Add the page title and toolbar.
 	 *
 	 * @return void
 	 *
 	 * @throws Exception
 	 */
-	protected function _prepareDocument()
+	protected function addToolbar()
 	{
-		$app   = JFactory::getApplication();
-		$menus = $app->getMenu();
-		$title = null;
+		JFactory::getApplication()->input->set('hidemainmenu', true);
 
-		// Because the application sets a default page title,
-		// We need to get it from the menu item itself
-		$menu = $menus->getActive();
+		$user  = JFactory::getUser();
+		$isNew = ($this->item->id == 0);
 
-		if ($menu)
+		if (isset($this->item->checked_out))
 		{
-			$this->params->def('page_heading', $this->params->get('page_title', $menu->title));
+			$checkedOut = !($this->item->checked_out == 0 || $this->item->checked_out == $user->get('id'));
 		}
 		else
 		{
-			$this->params->def('page_heading', JText::_('COM_TOOLS_DEFAULT_PAGE_TITLE'));
+			$checkedOut = false;
 		}
 
-		$title = $this->params->get('page_title', '');
+		$canDo = ToolsHelper::getActions();
 
-		if (empty($title))
+		JToolBarHelper::title(JText::_('COM_TOOLS_TITLE_ITEM_'.($isNew ? 'ADD' : 'EDIT')), 'pencil-2 article-add');
+
+		// If not checked out, can save the item.
+		if (!$checkedOut && ($canDo->get('core.edit') || ($canDo->get('core.create'))))
 		{
-			$title = $app->get('sitename');
-		}
-		elseif ($app->get('sitename_pagetitles', 0) == 1)
-		{
-			$title = JText::sprintf('JPAGETITLE', $app->get('sitename'), $title);
-		}
-		elseif ($app->get('sitename_pagetitles', 0) == 2)
-		{
-			$title = JText::sprintf('JPAGETITLE', $title, $app->get('sitename'));
+			JToolBarHelper::apply('item.apply', 'JTOOLBAR_APPLY');
+			JToolBarHelper::save('item.save', 'JTOOLBAR_SAVE');
 		}
 
-		$this->document->setTitle($title);
-
-		if ($this->params->get('menu-meta_description'))
+		if (!$checkedOut && ($canDo->get('core.create')))
 		{
-			$this->document->setDescription($this->params->get('menu-meta_description'));
+			JToolBarHelper::custom('item.save2new', 'save-new.png', 'save-new_f2.png', 'JTOOLBAR_SAVE_AND_NEW', false);
 		}
 
-		if ($this->params->get('menu-meta_keywords'))
+		// If an existing item, can save to a copy.
+		if (!$isNew && $canDo->get('core.create'))
 		{
-			$this->document->setMetadata('keywords', $this->params->get('menu-meta_keywords'));
+			JToolBarHelper::custom('item.save2copy', 'save-copy.png', 'save-copy_f2.png', 'JTOOLBAR_SAVE_AS_COPY', false);
 		}
 
-		if ($this->params->get('robots'))
+		// Button for version control
+		if ($this->state->params->get('save_history', 1) && $user->authorise('core.edit')) {
+			JToolbarHelper::versions('com_tools.item', $this->item->id);
+		}
+
+		if (empty($this->item->id))
 		{
-			$this->document->setMetadata('robots', $this->params->get('robots'));
+			JToolBarHelper::cancel('item.cancel', 'JTOOLBAR_CANCEL');
+		}
+		else
+		{
+			JToolBarHelper::cancel('item.cancel', 'JTOOLBAR_CLOSE');
 		}
 	}
 }

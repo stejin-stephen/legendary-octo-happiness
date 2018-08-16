@@ -1,0 +1,39 @@
+<html><head>
+
+        <script src="jquery-1.12.4.min.js"></script>
+		<script src="lightboxController.min.js"></script>
+
+</head>
+	<body>
+
+		<div class="contentWrap inner">
+
+			<article class="blox bloxPopup" data-src="https://player.vimeo.com/video/132793529" data-id="1">
+					<p>Vimeo example</p>
+			</article>
+
+			<article class="blox bloxPopup" data-src="https://www.youtube.com/watch?v=U9zFfIww3Go" data-id="2">
+					<p>YouTube example</p>
+			</article>
+
+			<article class="blox bloxPopup" data-src="https://source.unsplash.com/random/2000x2000" data-id="3">
+					<p>Image example</p>
+			</article>
+
+
+		</div>
+<script>
+
+    $('.bloxPopup').lightboxController({
+        appendRegion:   '.contentWrap'
+    });
+
+</script>
+<style>
+    .lightboxContain{position:fixed;top:0;bottom:0;left:0;right:0;z-index:2000;background:rgba(0,0,0,.5)}
+    .lightboxContain .indLightbox{position:absolute;top:50%;left:50%;-webkit-transform:translate(-50%,-50%);-ms-transform:translate(-50%,-50%);
+    transform:translate(-50%,-50%);width:56%;height:62%}.lightboxContain iframe{border:0;width:100%!important;height:100%!important}
+    .lightboxContain img,img{height:auto;max-width:100%}.lightboxContain img{float:none;max-height:100%;margin:0 auto}img{display:block}
+</style>
+
+</body></html>

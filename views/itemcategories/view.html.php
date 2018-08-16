@@ -1,9 +1,9 @@
 <?php
 
 /**
- * @version    CVS: 1.0
+ * @version    1.0
  * @package    Com_Tools
- * @author      <>
+ * @author      <https://development.karakas.be/issues/5184>
  * @copyright  2018
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
@@ -11,8 +11,6 @@
 defined('_JEXEC') or die;
 
 jimport('joomla.application.component.view');
-
-require_once(JPATH_ROOT.'/includes/truncatetext.php');
 
 /**
  * View class for a list of Tools.
@@ -27,8 +25,6 @@ class ToolsViewItemCategories extends JViewLegacy
 
 	protected $state;
 
-	protected $params;
-
 	/**
 	 * Display the view
 	 *
@@ -40,105 +36,137 @@ class ToolsViewItemCategories extends JViewLegacy
 	 */
 	public function display($tpl = null)
 	{
-		$app = JFactory::getApplication();
-
 		$this->state = $this->get('State');
 		$this->items = $this->get('Items');
 		$this->pagination = $this->get('Pagination');
-		$this->params = $app->getParams('com_tools');
-		$this->filterForm = $this->get('FilterForm');
-		$this->activeFilters = $this->get('ActiveFilters');
-		$this->settings = $this->get('Settings');
+        $this->filterForm = $this->get('FilterForm');
+        $this->activeFilters = $this->get('ActiveFilters');
 		
-		$pattern = '#<hr\s+id=("|\')system-readmore("|\')\s*\/*>#i';
-		
-		// Prepare the data.
-		foreach ($this->items as $item) {
-			$item->cat = json_decode($item->image);
-			$item->introtext = truncateHelper::truncate($item->description,100,array('html' => true,'exact' => false, 'ending' => '...'));
-			//$item->link = JRoute::_('index.php?option=com_tools&view=itemcategory&id='.(int) $item->id);
-			//$item->link = '<a class="pdf" onclick="document.getElementById(\'loginModal\').style.display=\'block\'" href="#inner_page">See more</a>';
-			$item->link = '<a class="pdf" id="tool_'.$item->id.'" href="#inner_page">See more</a>';
-		}
-
 		// Check for errors.
 		if (count($errors = $this->get('Errors')))
 		{
 			throw new Exception(implode("\n", $errors));
 		}
 
-		$this->_prepareDocument();
+		ToolsHelper::addSubmenu('itemcategories');
+
+		$this->addToolbar();
+
+		$this->sidebar = JHtmlSidebar::render();
 		parent::display($tpl);
 	}
 
 	/**
-	 * Prepares the document
+	 * Add the page title and toolbar.
 	 *
 	 * @return void
 	 *
-	 * @throws Exception
+	 * @since    1.6
 	 */
-	protected function _prepareDocument()
+	protected function addToolbar()
 	{
-		$app   = JFactory::getApplication();
-		$menus = $app->getMenu();
-		$title = null;
+		$state = $this->get('State');
+		$canDo = ToolsHelper::getActions();
 
-		// Because the application sets a default page title,
-		// we need to get it from the menu item itself
-		$menu = $menus->getActive();
+		JToolBarHelper::title(JText::_('COM_TOOLS_TITLE_ITEMS_CAT'), 'link news');
 
-		if ($menu)
-		{
-			$this->params->def('page_heading', $this->params->get('page_title', $menu->title));
-		}
-		else
-		{
-			$this->params->def('page_heading', JText::_('COM_TOOLS_DEFAULT_PAGE_TITLE'));
-		}
+		// Check if the form exists before showing the add/edit buttons
+		$formPath = JPATH_COMPONENT_ADMINISTRATOR . '/views/itemcategory';
 
-		$title = $this->params->get('page_title', '');
+		if (file_exists($formPath))
+		{
+			if ($canDo->get('core.create'))
+			{
+				JToolBarHelper::addNew('itemcategory.add', 'JTOOLBAR_NEW');
 
-		if (empty($title))
-		{
-			$title = $app->get('sitename');
-		}
-		elseif ($app->get('sitename_pagetitles', 0) == 1)
-		{
-			$title = JText::sprintf('JPAGETITLE', $app->get('sitename'), $title);
-		}
-		elseif ($app->get('sitename_pagetitles', 0) == 2)
-		{
-			$title = JText::sprintf('JPAGETITLE', $title, $app->get('sitename'));
+				if (isset($this->items[0]))
+				{
+					//JToolbarHelper::custom('itemcategories.duplicate', 'copy.png', 'copy_f2.png', 'JTOOLBAR_DUPLICATE', true);
+				}
+			}
+
+			if ($canDo->get('core.edit') && isset($this->items[0]))
+			{
+				JToolBarHelper::editList('itemcategory.edit', 'JTOOLBAR_EDIT');
+			}
 		}
 
-		$this->document->setTitle($title);
-
-		if ($this->params->get('menu-meta_description'))
+		if ($canDo->get('core.edit.state'))
 		{
-			$this->document->setDescription($this->params->get('menu-meta_description'));
+			if (isset($this->items[0]->state))
+			{
+				JToolBarHelper::divider();
+				JToolBarHelper::custom('itemcategories.publish', 'publish.png', 'publish_f2.png', 'JTOOLBAR_PUBLISH', true);
+				JToolBarHelper::custom('itemcategories.unpublish', 'unpublish.png', 'unpublish_f2.png', 'JTOOLBAR_UNPUBLISH', true);
+			}
+			elseif (isset($this->items[0]))
+			{
+				// If this component does not use state then show a direct delete button as we can not trash
+				JToolBarHelper::deleteList('', 'itemcategories.delete', 'JTOOLBAR_DELETE');
+			}
+
+			if (isset($this->items[0]->state))
+			{
+				JToolBarHelper::divider();
+				JToolBarHelper::archiveList('itemcategories.archive', 'JTOOLBAR_ARCHIVE');
+			}
+
+			if (isset($this->items[0]->checked_out))
+			{
+				JToolBarHelper::custom('itemcategories.checkin', 'checkin.png', 'checkin_f2.png', 'JTOOLBAR_CHECKIN', true);
+			}
 		}
 
-		if ($this->params->get('menu-meta_keywords'))
+		// Show trash and delete for components that uses the state field
+		if (isset($this->items[0]->state))
 		{
-			$this->document->setMetadata('keywords', $this->params->get('menu-meta_keywords'));
+			if ($state->get('filter.state') == -2 && $canDo->get('core.delete'))
+			{
+				JToolBarHelper::deleteList('', 'itemcategories.delete', 'JTOOLBAR_EMPTY_TRASH');
+				JToolBarHelper::divider();
+			}
+			elseif ($canDo->get('core.edit.state'))
+			{
+				JToolBarHelper::trash('itemcategories.trash', 'JTOOLBAR_TRASH');
+				JToolBarHelper::divider();
+			}
 		}
 
-		if ($this->params->get('robots'))
+		if ($canDo->get('core.admin'))
 		{
-			$this->document->setMetadata('robots', $this->params->get('robots'));
+			JToolBarHelper::preferences('com_tools');
 		}
+
+		// Set sidebar action - New in 3.0
+		JHtmlSidebar::setAction('index.php?option=com_tools&view=itemcategories');
 	}
 
 	/**
-	 * Check if state is set
+	 * Method to order fields 
 	 *
-	 * @param   mixed  $state  State
-	 *
-	 * @return bool
+	 * @return void 
 	 */
-	public function getState($state)
+	protected function getSortFields()
 	{
-		return isset($this->state->{$state}) ? $this->state->{$state} : false;
+		return array(
+			'a.`id`' => JText::_('JGRID_HEADING_ID'),
+			'a.`title`' => JText::_('COM_TOOLS_ITEMS_TITLE'),
+			'a.`description`' => JText::_('COM_TOOLS_ITEMS_DESCRIPTION'),
+			'a.`type`' => JText::_('COM_TOOLS_ITEMS_TYPE'),
+			'a.`ordering`' => JText::_('JGRID_HEADING_ORDERING'),
+			'a.`state`' => JText::_('JSTATUS'),
+		);
 	}
+
+    /**
+     * Check if state is set
+     *
+     * @param   mixed  $state  State
+     *
+     * @return bool
+     */
+    public function getState($state)
+    {
+        return isset($this->state->{$state}) ? $this->state->{$state} : false;
+    }
 }

@@ -12,8 +12,6 @@ defined('_JEXEC') or die;
 
 jimport('joomla.application.component.view');
 
-require_once(JPATH_ROOT.'/includes/truncatetext.php');
-
 /**
  * View to edit
  *
@@ -27,8 +25,6 @@ class ToolsViewItemCategory extends JViewLegacy
 
 	protected $form;
 
-	protected $params;
-
 	/**
 	 * Display the view
 	 *
@@ -40,20 +36,9 @@ class ToolsViewItemCategory extends JViewLegacy
 	 */
 	public function display($tpl = null)
 	{
-		$app  = JFactory::getApplication();
-		$user = JFactory::getUser();
-
-		$this->state  = $this->get('State');
-		$this->item   = $this->get('Item');
-		$this->params = $app->getParams('com_tools');
-
-		$this->item->tools = self::getTools($this->item->id);
-		$this->item->subitems = self::getSubItems($this->item->id);
-
-		if (!empty($this->item))
-		{
-			$this->form = $this->get('Form');
-		}
+		$this->state = $this->get('State');
+		$this->item  = $this->get('Item');
+		$this->form  = $this->get('Form');
 
 		// Check for errors.
 		if (count($errors = $this->get('Errors')))
@@ -61,128 +46,67 @@ class ToolsViewItemCategory extends JViewLegacy
 			throw new Exception(implode("\n", $errors));
 		}
 
-		if(!in_array($this->item->access, $user->getAuthorisedViewLevels())){
-                return JError::raiseError(403, JText::_('JERROR_ALERTNOAUTHOR'));
-            }
-
-
-		if ($this->_layout == 'edit')
-		{
-			$authorised = $user->authorise('core.create', 'com_tools');
-
-			if ($authorised !== true)
-			{
-				throw new Exception(JText::_('JERROR_ALERTNOAUTHOR'));
-			}
-		}
-
-		$this->_prepareDocument();
-
+		$this->addToolbar();
 		parent::display($tpl);
 	}
 
-	public function getSubItems($id)
-	{
-		$db    = JFactory::getDbo();
-		$query = $db->getQuery(true);
-
-		$query
-			->select('a.*')
-			->from($db->quoteName('#__tools_categories', 'a'))
-			->where('a.parent_id = '.$id)
-			->order('a.id DESC');
-			
-		$db->setQuery($query);
-
-		$result = $db->loadObjectList();
-		
-		foreach ($result as $item) {
-			$item->tools = self::getTools($item->id);
-		}
-		
-		return $result;
-	}
-
-	public function getTools($id)
-	{
-			$db    = JFactory::getDbo();
-			$query = $db->getQuery(true);
-
-			$query
-				->select('a.*')
-				->from($db->quoteName('#__tools', 'a'))
-				->where('a.tool_catid = '.$id)
-				->order('a.id DESC');
-
-			$db->setQuery($query);
-
-			$result = $db->loadObjectList();
-
-			foreach ($result as $item) {
-				$item->cat = json_decode($item->image);
-				$item->introtext = truncateHelper::truncate($item->description,100,array('html' => true,'exact' => false, 'ending' => '...'));
-				$item->showtext = $item->type == 3 ? 'Download' : 'View';
-			}
-			
-			return $result;
-	}
-
 	/**
-	 * Prepares the document
+	 * Add the page title and toolbar.
 	 *
 	 * @return void
 	 *
 	 * @throws Exception
 	 */
-	protected function _prepareDocument()
+	protected function addToolbar()
 	{
-		$app   = JFactory::getApplication();
-		$menus = $app->getMenu();
-		$title = null;
+		JFactory::getApplication()->input->set('hidemainmenu', true);
 
-		// Because the application sets a default page title,
-		// We need to get it from the menu item itself
-		$menu = $menus->getActive();
+		$user  = JFactory::getUser();
+		$isNew = ($this->item->id == 0);
 
-		if ($menu)
+		if (isset($this->item->checked_out))
 		{
-			$this->params->def('page_heading', $this->params->get('page_title', $menu->title));
+			$checkedOut = !($this->item->checked_out == 0 || $this->item->checked_out == $user->get('id'));
 		}
 		else
 		{
-			$this->params->def('page_heading', JText::_('COM_TOOLS_DEFAULT_PAGE_TITLE'));
+			$checkedOut = false;
 		}
 
-		$title = $this->params->get('page_title', '');
+		$canDo = ToolsHelper::getActions();
 
-		if (empty($title))
+		JToolBarHelper::title(JText::_('COM_TOOLS_TITLE_ITEM_CAT_'.($isNew ? 'ADD' : 'EDIT')), 'pencil-2 article-add');
+
+		// If not checked out, can save the item.
+		if (!$checkedOut && ($canDo->get('core.edit') || ($canDo->get('core.create'))))
 		{
-			$title = $app->get('sitename');
-		}
-		elseif ($app->get('sitename_pagetitles', 0) == 1)
-		{
-			$title = JText::sprintf('JPAGETITLE', $app->get('sitename'), $title);
-		}
-		elseif ($app->get('sitename_pagetitles', 0) == 2)
-		{
-			$title = JText::sprintf('JPAGETITLE', $title, $app->get('sitename'));
+			JToolBarHelper::apply('itemcategory.apply', 'JTOOLBAR_APPLY');
+			JToolBarHelper::save('itemcategory.save', 'JTOOLBAR_SAVE');
 		}
 
-		$this->document->setTitle($title);
-
-		if ($this->params->get('menu-meta_description'))
+		if (!$checkedOut && ($canDo->get('core.create')))
 		{
-			$this->document->setDescription($this->params->get('menu-meta_description'));
+			JToolBarHelper::custom('itemcategory.save2new', 'save-new.png', 'save-new_f2.png', 'JTOOLBAR_SAVE_AND_NEW', false);
 		}
 
-		if ($this->params->get('menu-meta_keywords'))
+		// If an existing item, can save to a copy.
+		if (!$isNew && $canDo->get('core.create'))
 		{
-			$this->document->setMetadata('keywords', $this->params->get('menu-meta_keywords'));
+			JToolBarHelper::custom('itemcategory.save2copy', 'save-copy.png', 'save-copy_f2.png', 'JTOOLBAR_SAVE_AS_COPY', false);
 		}
 
-		if ($this->params->get('robots'))
+		// Button for version control
+		if ($this->state->params->get('save_history', 1) && $user->authorise('core.edit')) {
+			JToolbarHelper::versions('com_tools.itemcategory', $this->item->id);
+		}
+
+		if (empty($this->item->id))
 		{
-			$this->document->setMetadata('robots', $this->params->get('robots'));
+			JToolBarHelper::cancel('itemcategory.cancel', 'JTOOLBAR_CANCEL');
+		}
+		else
+		{
+			JToolBarHelper::cancel('itemcategory.cancel', 'JTOOLBAR_CLOSE');
 		}
 	}
 }
