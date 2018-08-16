@@ -120,10 +120,27 @@ class ToolsViewItemCategory extends JViewLegacy
 				$item->cat = json_decode($item->image);
 				$item->introtext = truncateHelper::truncate($item->description,100,array('html' => true,'exact' => false, 'ending' => '...'));
 				$item->showtext = $item->type == 3 ? 'Download' : 'View';
-				$item->link = $item->type == 3 ? JRoute::_("index.php?option=com_attachments&view=attachments&id=" . $attachment->did) : 'View';
+				$item->link = $item->type == 3 ? self::getDownload($item) : '#listing_type1';
 			}
 			//var_dump($result); exit;
 			return $result;
+	}
+
+	public function getDownload($item)
+	{
+		$db	= JFactory::getDbo();
+
+		$id 		= $item->id; //Item id
+		$catid 		= $item->catid; // Category id
+		$component 	= 'tools'; // Component directory name
+
+		$query ="SELECT a.*, ad.id AS docid, ad.name, ad.title, ad.description, ad.extension, ad.size, ad.ordering, ad.language FROM #__attachments a, #__attachment_documents ad ".
+"WHERE ad.component = '{$component}' AND a.iid = {$id} AND a.cid = {$catid} AND a.did = ad.id ORDER BY ad.ordering ASC";
+
+$db->setQuery($query);
+$attachments = $db->loadObject();
+
+return JRoute::_("index.php?option=com_attachments&view=attachments&id=" . $attachments->did);
 	}
 
 	/**
