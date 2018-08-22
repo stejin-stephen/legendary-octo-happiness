@@ -18,8 +18,8 @@ jimport('joomla.application.component.modellist');
  */
 class ToolsModelItemCategories extends JModelList
 {
-    
-        
+
+
 /**
 	* Constructor.
 	*
@@ -55,10 +55,10 @@ class ToolsModelItemCategories extends JModelList
 		parent::__construct($config);
 	}
 
-    
-        
-    
-        
+
+
+
+
 	/**
 	 * Method to auto-populate the model state.
 	 *
@@ -126,9 +126,9 @@ class ToolsModelItemCategories extends JModelList
 		$id .= ':' . $this->getState('filter.language');
 		$id .= ':' . $this->getState('filter.created');
 
-                
+
                     return parent::getStoreId($id);
-                
+
 	}
 
 	/**
@@ -152,7 +152,7 @@ class ToolsModelItemCategories extends JModelList
 			)
 		);
 		$query->from('`#__tools_categories` AS a');
-                
+
 		// Join over the users for the checked out user
 		$query->select("uc.name AS uEditor");
 		$query->join("LEFT", "#__users AS uc ON uc.id=a.checked_out");
@@ -176,7 +176,7 @@ class ToolsModelItemCategories extends JModelList
 		// Join over the categories.
 		//$query->select('c.title AS category_title')
 		//	->join('LEFT', '#__categories AS c ON c.id = a.catid');
-		
+
 		//only fetch parent categories
 		$query->where('a.parent_id = 0');
 
@@ -192,7 +192,7 @@ class ToolsModelItemCategories extends JModelList
 			$groups = implode(',', $user->getAuthorisedViewLevels());
 			$query->where('a.access IN (' . $groups . ')');
 		}
-                
+
 
 		// Filter by published state
 		$published = $this->getState('filter.state');
@@ -228,7 +228,7 @@ class ToolsModelItemCategories extends JModelList
 				$query->where('( a.title LIKE ' . $search . '  OR  a.description LIKE ' . $search . ' )');
 			}
 		}
-                
+
 
 		// Filtering type
 		//$filter_type = $this->state->get("filter.type");
@@ -237,22 +237,22 @@ class ToolsModelItemCategories extends JModelList
 		//{
 		//	$query->where("a.`type` = '".$db->escape($filter_type)."'");
 		//}
-		
+
 		if(JRequest::getVar('tmpl')!='component'){
 			// Filter on the language.
 			$langsession 	= 	JFactory::getSession()->get('registry');
 			$lang 		= 	$langsession->get('application.lang');
-			
+
 			if($lang){
 				$query->where('a.language = "' . $lang .'" ');
 			}else if ($language = $this->getState('filter.language')){
 				$query->where('a.language = ' . $db->quote($language));
 			}
-			
+
 		}else{
 			$query->where('a.language = "' . JRequest::getVar('forcedLanguage') .'" ');
 		}
-                
+
 		// Add the list ordering clause.
 		$orderCol  = $this->state->get('list.ordering', "a.id");
 		$orderDirn = $this->state->get('list.direction', "ASC");
@@ -273,7 +273,7 @@ class ToolsModelItemCategories extends JModelList
 	public function getItems()
 	{
 		$items = parent::getItems();
-                
+
 		foreach ($items as $oneItem)
 		{
 			$oneItem->subItems = self::getSubItems($oneItem->id);;
@@ -281,25 +281,34 @@ class ToolsModelItemCategories extends JModelList
 
 		return $items;
 	}
-	
+
 	public function getSubItems($id)
 	{
 		// Get a db connection.
 		$db = JFactory::getDbo();
-		
+
 		// Create a new query object.
 		$query = $db->getQuery(true);
-		
-		$query->select('*');
-		$query->from('#__tools_categories');
+
+		$query->select('a.*');
+		$query->from('#__tools_categories as a');
 		$query->where("parent_id = ".$id);
-		
+
+    // Add the list ordering clause.
+    $orderCol  = $this->state->get('list.ordering', "a.id");
+    $orderDirn = $this->state->get('list.direction', "ASC");
+
+    if ($orderCol && $orderDirn)
+    {
+      $query->order($db->escape($orderCol . ' ' . $orderDirn));
+    }
+
 		// Reset the query using our newly populated query object.
 		$db->setQuery($query);
 
 		// Load the results
 		$results = $db->loadObjectList();
-		
+
 		return $results;
 	}
 }

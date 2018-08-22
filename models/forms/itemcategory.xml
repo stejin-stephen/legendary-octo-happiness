@@ -9,7 +9,7 @@
         default="0"
         description="JGLOBAL_FIELD_ID_DESC"
     />
-    
+
     <field
         name="parent_id"
         type="sql"
@@ -20,7 +20,7 @@
         value_field="title">
       <option value="0">No parent</option>
     </field>
-    
+
     <field
         name="catid"
         type="hidden"
@@ -28,7 +28,7 @@
         description="COM_TOOLS_FORM_DESC_ITEM_CATID"
         default="0"
     />
-    
+
     <field
         name="title"
         filter="safehtml"
@@ -38,7 +38,7 @@
         description="COM_TOOLS_FORM_DESC_ITEM_TITLE"
         hint="COM_TOOLS_FORM_LBL_ITEM_TITLE"
     />
-    
+
     <field
         name="alias"
         type="text"
@@ -48,7 +48,7 @@
         description="COM_TOOLS_FORM_DESC_ITEM_ALIAS"
         hint="COM_TOOLS_FORM_LBL_ITEM_ALIAS"
     />
-    
+
     <field
         name="description"
         editor="|"
@@ -61,9 +61,9 @@
         hint="COM_TOOLS_FORM_LBL_ITEM_DESCRIPTION"
         hide="attachments"
     />
-    
+
     <field name="ordering"/>
-    
+
     <field
         name="password"
         filter="safehtml"
@@ -72,17 +72,16 @@
         label="Password"
         class="inputbox"
     />
-    
+
     <field
         name="emails"
         filter="safehtml"
         type="textarea"
-        required="true"
         label="Access (emails)"
         class="input-xxlarge"
         rows="10"
     />
-    
+
     <field
         name="state"
         default="1"
@@ -96,7 +95,7 @@
       <option value="2">JARCHIVED</option>
       <option value="-2">JTRASHED</option>
     </field>
-    
+
     <field
         name="access"
         type="accesslevel"
@@ -104,20 +103,20 @@
         description="COM_TOOLS_FORM_DESC_ITEM_ACCESS"
         hint="COM_TOOLS_FORM_LBL_ITEM_ACCESS"
     />
-    
+
     <field
         name="checked_out"
         type="hidden"
         filter="unset"
     />
-    
+
     <field
         name="checked_out_time"
         default="0000-00-00 00:00:00"
         type="hidden"
         filter="unset"
     />
-    
+
     <field
         name="created_by"
         type="createdby"
@@ -127,7 +126,7 @@
         hidden="true"
         hint="COM_TOOLS_FORM_LBL_ITEM_CREATED_BY"
     />
-    
+
     <field
         name="created"
         type="calendar"
@@ -136,7 +135,7 @@
         description="COM_TOOLS_FORM_DESC_ITEM_CREATED"
         hint="COM_TOOLS_FORM_LBL_ITEM_CREATED"
     />
-    
+
     <field
         name="modified_by"
         type="modifiedby"
@@ -146,7 +145,7 @@
         hidden="true"
         hint="COM_TOOLS_FORM_LBL_ITEM_MODIFIED_BY"
     />
-    
+
     <field
         name="modified"
         type="timecreated"
@@ -154,7 +153,7 @@
         description="COM_TOOLS_FORM_DESC_ITEM_MODIFIED"
         hint="COM_TOOLS_FORM_LBL_ITEM_MODIFIED"
     />
-    
+
     <field
         name="version_note"
         type="text"
@@ -165,7 +164,7 @@
         labelclass="control-label"
     />
   </fieldset>
-  
+
 	<fields name="imageinfo">
 		<fieldset
 			name="image-info"
@@ -177,20 +176,26 @@
 				type="media"
 				preview="tooltip"
 				label="Image"/>
-			<field name="alt"
+        <field
+  				name="image_thumb"
+                  required="true"
+  				type="media"
+  				preview="tooltip"
+  				label="Thumb Image (Size: 100 x 80)"/>
+			<!-- <field name="alt"
 				type="text"
 				label="Alt Text"
-				size="30"/>
+				size="30"/> -->
 		</fieldset>
 	</fields>
-  
+
   <fieldset name="accesscontrol">
     <field
         name="asset_id"
         type="hidden"
         filter="unset"
     />
-    
+
     <field
         name="rules"
         type="rules"

@@ -33,10 +33,10 @@ $sortFields = $this->getSortFields();
 ?>
 <?php
 	$data = @$displayData;;
-	
+
 	// Receive overridable options
 	$data['options'] = !empty($data['options']) ? $data['options'] : array();
-	
+
 	// Set some basic options
 	$customOptions = array(
 		'filtersHidden'       => isset($data['options']['filtersHidden']) ? $data['options']['filtersHidden'] : empty($data['view']->activeFilters),
@@ -45,14 +45,14 @@ $sortFields = $this->getSortFields();
 		'orderFieldSelector'  => '#list_fullordering',
 		'filterButton' 	      => 0
 	);
-	
+
 	$data['options'] = array_merge($customOptions, $data['options']);
-	
+
 	$formSelector = !empty($data['options']['formSelector']) ? $data['options']['formSelector'] : '#adminForm';
-	
+
 	// Load search tools
 	JHtml::_('searchtools.form', $formSelector, $data['options']);
-	
+
 	$filtersClass = @$data['view']->activeFilters ? ' js-stools-container-filters-visible' : '';
 ?>
 <?php
@@ -92,7 +92,7 @@ $sortFields = $this->getSortFields();
 			</div>
 			</div>
 	<div class="span9 main-container">
-		<div id="j-main-container"> 
+		<div id="j-main-container">
 			<div class="clearfix"></div>
 			<?php if (empty($this->items)) : ?>
 					<div class="alert alert-no-items">
@@ -131,7 +131,7 @@ $sortFields = $this->getSortFields();
                         </th>
 					<?php endif; ?>
 
-					
+
 				</tr>
 				</thead>
 				<tfoot>
@@ -255,10 +255,10 @@ $sortFields = $this->getSortFields();
 										$disabledLabel    = JText::_('JORDERINGDISABLED');
 										$disableClassName = 'inactive tip-top';
 									endif; ?>
-									<!--<span class="sortable-handler hasTooltip <?php echo $disableClassName ?>"
+									<span class="sortable-handler hasTooltip <?php echo $disableClassName ?>"
 										  title="<?php echo $disabledLabel ?>">
 							<i class="icon-menu"></i>
-						</span>-->
+						</span>
 									<input type="text" style="display:none" name="order[]" size="5"
 										   value="<?php echo $item->ordering; ?>" class="width-20 text-area-order "/>
 								<?php else : ?>
