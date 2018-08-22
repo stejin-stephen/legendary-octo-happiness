@@ -48,10 +48,16 @@ $item = $this->settings[0];
 
 			<table class="table table-striped component-settings" id="ItemList">
 				<tbody>
+					<tr class="row0" sortable-group-id="<?php echo $item->catid?>">	
+						 <td colspan="2" style="text-align: left" class="order nowrap center hidden-phone">
+							<div class="control-label"><label><?php echo JText::_("Title");?></label></div>
+							<input class="inputbox input-xlarge input-large-text" type="text" name="title" value="<?php echo  $item->title;?>" />
+						</td> 
+					</tr>
 					<tr class="row1" sortable-group-id="<?php echo $item->catid?>">
 						 <td colspan="2" style="text-align: left" class="order nowrap center hidden-phone">
 							<div class="control-label"><label><?php echo JText::_("Intro Text");?></label></div>
-							<?php echo $editor->display( 'introtext',  $item->introtext , '200', '20', '30', '15' ,array('pagebreak','readmore','jcommentson', 'image', 'menu', 'article','video','module','contact', 'attachments')) ;?>
+							<?php echo $editor->display( 'introtext',  str_replace("\'","'", $item->introtext) , '200', '20', '30', '15' ,array('pagebreak','readmore','jcommentson', 'image', 'menu', 'article','video','module','contact', 'attachments')) ;?>
 						</td>
 					</tr>
 				</tbody>

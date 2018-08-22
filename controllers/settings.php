@@ -49,13 +49,13 @@ class ToolsControllerSettings extends JControllerAdmin
 
 
 
-		$description		= JRequest::getVar('introtext', '', 'post', 'string', JREQUEST_ALLOWRAW);
+		$description		= str_replace("'","\'", JRequest::getVar('introtext', '', 'post', 'string', JREQUEST_ALLOWRAW));
 
 		if(empty($id)){
-			$query = "INSERT INTO #__tools_settings (`id`, `introtext`) VALUES ( '',  '$description')";
+			$query = "INSERT INTO #__tools_settings (`id`, `title`, `introtext`) VALUES ( '',  {$db->quote($title)}, {$db->quote($description)})";
 
 		}else{
-			$query="UPDATE  #__tools_settings SET introtext = {$db->quote($description)}".
+			$query="UPDATE  #__tools_settings SET introtext = {$db->quote($description)}, `title` = {$db->quote($title)}".
 			" WHERE id={$id}";
 		}
 

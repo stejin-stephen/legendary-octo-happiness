@@ -37,7 +37,7 @@ $listDirn   = $this->state->get('list.direction');
                             <dl>
                                 <dt><img alt="Preview" name="mem_image" src="<?php echo $item->cat->image; ?>"></dt>
                                 <dd>
-                                    <p><?php echo $item->introtext; ?></p>
+                                    <?php echo $item->introtext; ?>
                                     <span class="dwn">
                     <!--<a class="pdf" href="<?php echo $item->link; ?>">See more</a>-->
                   <?php echo $item->link; ?>

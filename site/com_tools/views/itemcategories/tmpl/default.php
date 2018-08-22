@@ -9,7 +9,8 @@
 // No direct access
 defined('_JEXEC') or die;
 
-$my_page_title = $this->escape($this->params->get('page_title'));
+//$my_page_title = $this->escape($this->params->get('page_title'));
+$my_page_title = $this->escape($this->settings->title);
 $page_title_parts = explode(" ", $my_page_title, 2);
 
 if (count($page_title_parts)>0) {
@@ -26,7 +27,7 @@ if (count($page_title_parts)>0) {
 		<div class="title nomargin column">
 			<h3><?php echo $new_page_title; ?></h3>
 		</div>
-	<div class="intro"><?php echo $this->settings->introtext; ?><br /></div>
+	<div class="intro"><?php echo str_replace("\'","'", $this->settings->introtext); ?><br /></div>
 	</div>
 </div>
 

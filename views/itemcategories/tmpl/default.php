@@ -98,7 +98,6 @@ $sortFields = $this->getSortFields();
 					<div class="alert alert-no-items">
 						<?php echo JText::_('JGLOBAL_NO_MATCHING_RESULTS'); ?>
 					</div>
-		<div id="j-main-container">
 			<?php else: ?>
 			<table class="table table-striped" id="itemList">
 				<thead>
@@ -111,12 +110,15 @@ $sortFields = $this->getSortFields();
 				<th class='left'>
 				<?php echo JHtml::_('searchtools.sort',  'COM_TOOLS_ITEMS_TITLE', 'a.`title`', $listDirn, $listOrder); ?>
 				</th>
-				<th class='left'>
+				<!--<th class='left'>
 				<?php echo JHtml::_('searchtools.sort',  'COM_TOOLS_ITEMS_DESCRIPTION', 'a.`description`', $listDirn, $listOrder); ?>
+				</th>-->
+				<th class='left'>
+				<?php echo JHtml::_('searchtools.sort',  'E-mail(s)', 'a.`emails`', $listDirn, $listOrder); ?>
 				</th>
 
 					<?php if (isset($this->items[0]->state)): ?>
-						<th width="1%" class="nowrap center">
+						<th class='left'>
 								<?php echo JHtml::_('searchtools.sort', 'JSTATUS', 'a.`state`', $listDirn, $listOrder); ?>
 </th>
 					<?php endif; ?>
@@ -167,10 +169,13 @@ $sortFields = $this->getSortFields();
 					<?php echo $this->escape($item->title); ?>
 				<?php endif; ?>
 
-				</td>				<td>
+				</td>		<td>
+
+					<?php echo $item->emails; ?>
+				</td>			<!--<td>
 
 					<?php echo $item->description; ?>
-				</td>
+				</td>-->
 						<?php if (isset($this->items[0]->state)): ?>
 							<td class="center">
 								<?php echo JHtml::_('jgrid.published', $item->state, $i, 'itemcategories.', $canChange, 'cb'); ?>
@@ -228,10 +233,13 @@ $sortFields = $this->getSortFields();
 					<?php echo $this->escape($item->title); ?>
 				<?php endif; ?>
 
-				</td>				<td>
+				</td><td>
+
+					<?php echo $item->emails; ?>
+				</td>				<!--<td>
 
 					<?php echo $item->description; ?>
-				</td><?php if (isset($this->items[0]->state)): ?>
+				</td>--><?php if (isset($this->items[0]->state)): ?>
 							<td class="center">
 								<?php echo JHtml::_('jgrid.published', $item->state, '0'.$j, 'itemcategories.', $canChange, 'cb'); ?>
 </td><td>

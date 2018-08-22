@@ -189,7 +189,7 @@
                 filter="url"
 				label="URL"
                 class="inputbox input-xxlarge input-large-text"
-				hint="Youtube URL"
+				hint="www.youtube.com/watch?v={video-id}"
 				size="30"/>
 			<field
 				name="image"

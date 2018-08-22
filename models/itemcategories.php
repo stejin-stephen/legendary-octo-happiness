@@ -40,7 +40,7 @@ class ToolsModelItemCategories extends JModelList
 				'description', 'a.`description`',
 				'image', 'a.`image`',
 				'document', 'a.`document`',
-				//'type', 'a.`type`',
+				'emails', 'a.`emails`',
 				'ordering', 'a.`ordering`',
 				'state', 'a.`state`',
 				'access', 'a.`access`',

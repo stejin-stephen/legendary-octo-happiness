@@ -32,8 +32,8 @@ JHtml::_('formbehavior.chosen', 'select');
                                 <dt><img alt="Preview" name="mem_image" src="<?php echo $item->cat->image; ?>"></dt>
                                 <dd>
                                     <p><?php echo $item->introtext; ?></p>
-                                    <span class="dwn">
-                                      <a class="pdf <?= $item->type !=3 ? 'blox bloxPopup' : '' ;?>" <?= $item->type !=3 ? 'data-src="'.$item->cat->url.'" data-id="'.$item->id.'"' : '' ;?> href="<?php echo $item->link; ?>"><?php echo $item->showtext; ?></a>
+                                    <span class="dwn gallery">
+                                      <a class="pdf" <?= $item->type !=3 ? "rel='prettyPhoto'" : '' ;?> href="<?php echo $item->link; ?>"><?php echo $item->showtext; ?></a>
                                     </span>
                                 </dd>
                             </dl>
@@ -46,17 +46,12 @@ JHtml::_('formbehavior.chosen', 'select');
             </div>
         </div>
     </div>
-<style>
-    .lightboxContain{position:fixed;top:0;bottom:0;left:0;right:0;z-index:2000;background:rgba(0,0,0,.5)}
-    .lightboxContain .indLightbox{position:absolute;top:50%;left:50%;-webkit-transform:translate(-50%,-50%);-ms-transform:translate(-50%,-50%);
-    transform:translate(-50%,-50%);width:56%;height:62%}.lightboxContain iframe{border:0;width:100%!important;height:100%!important}
-    .lightboxContain img,img{height:auto;max-width:100%}.lightboxContain img{float:none;max-height:100%;margin:0 auto}img{display:block}
-</style>
-
-<script>
-
-jQuery('.bloxPopup').lightboxController({
-    appendRegion:   '.contentWrap'
-});
-
-</script>
+    <script type="text/javascript" charset="utf-8">
+        $(document).ready(function(){
+            $(".gallery a[rel^='prettyPhoto']").prettyPhoto();
+        });
+    </script>
+    <style>
+        div.pp_overlay{background:#000;display:none;left:0;position:absolute;top:0;width:100%;z-index:9500}.pp_details{display: none;}
+        div.pp_pic_holder{display:none;position:absolute;width:100px;z-index:10000}.pp_fade,.pp_gallery li.default a img{display:none}
+    </style>

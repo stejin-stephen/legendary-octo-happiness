@@ -98,7 +98,6 @@ $sortFields = $this->getSortFields();
 					<div class="alert alert-no-items">
 						<?php echo JText::_('JGLOBAL_NO_MATCHING_RESULTS'); ?>
 					</div>
-		<div id="j-main-container">
 			<?php else: ?>
 			<table class="table table-striped" id="itemList">
 				<thead>

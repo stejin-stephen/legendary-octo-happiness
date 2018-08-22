@@ -98,7 +98,6 @@ $sortFields = $this->getSortFields();
 					<div class="alert alert-no-items">
 						<?php echo JText::_('JGLOBAL_NO_MATCHING_RESULTS'); ?>
 					</div>
-		<div id="j-main-container">
 			<?php else: ?>
 			<table class="table table-striped" id="itemList">
 				<thead>
@@ -109,14 +108,17 @@ $sortFields = $this->getSortFields();
 							   <label for="checkall" class="blanklabel">&nbsp;</label>
 					</th>
 				<th class='left'>
-				<?php echo JHtml::_('searchtools.sort',  'COM_TOOLS_ITEMS_TITLE', 'a.`title`', $listDirn, $listOrder); ?>
+				<?php echo JHtml::_('searchtools.sort',  'Date', 'a.`created`', $listDirn, $listOrder); ?>
 				</th>
 				<th class='left'>
-				<?php echo JHtml::_('searchtools.sort',  'COM_TOOLS_ITEMS_DESCRIPTION', 'a.`description`', $listDirn, $listOrder); ?>
+				<?php echo JHtml::_('searchtools.sort',  'COM_TOOLS_ITEMS_TITLE', 'a.`title`', $listDirn, $listOrder); ?>
 				</th>
+				<th class="left">
+								<?php echo JHtml::_('searchtools.sort', 'Type', 'a.`type`', $listDirn, $listOrder); ?>
+</th>
 
 					<?php if (isset($this->items[0]->state)): ?>
-						<th width="1%" class="nowrap center">
+						<th class="left">
 								<?php echo JHtml::_('searchtools.sort', 'JSTATUS', 'a.`state`', $listDirn, $listOrder); ?>
 </th>
 					<?php endif; ?>
@@ -154,7 +156,10 @@ $sortFields = $this->getSortFields();
 						<td class="hidden-phone">
 							<?php echo JHtml::_('grid.id', $i, $item->id); ?>
 							<label for="cb<?php echo $i; ?>" class="blanklabel">&nbsp;</label>
-						</td>
+						</td>			<td>
+
+					<?php echo JHtml::_('date', $item->created, JText::_('DATE_FORMAT_LC4')); ?>
+				</td>
 
 														<td>
 				<?php if (isset($item->checked_out) && $item->checked_out && ($canEdit || $canChange)) : ?>
@@ -167,9 +172,9 @@ $sortFields = $this->getSortFields();
 					<?php echo $this->escape($item->title); ?>
 				<?php endif; ?>
 
-				</td>				<td>
+				</td>	<td>
 
-					<?php echo $item->description; ?>
+					<?php echo $item->type; ?>
 				</td>
 						<?php if (isset($this->items[0]->state)): ?>
 							<td class="center">

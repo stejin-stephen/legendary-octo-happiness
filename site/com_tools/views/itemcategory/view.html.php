@@ -120,7 +120,14 @@ class ToolsViewItemCategory extends JViewLegacy
 				$item->cat = json_decode($item->image);
 				$item->introtext = truncateHelper::truncate($item->description,100,array('html' => true,'exact' => false, 'ending' => '...'));
 				$item->showtext = $item->type == 3 ? 'Download' : 'View';
-				$item->link = $item->type == 3 ? self::getDownload($item) : '#listing_type1';
+				
+				if($item->type == 3):
+					$item->link = self::getDownload($item);
+				elseif($item->type == 2):
+					$item->link = $item->cat->url;
+				else:
+					$item->link = $item->cat->image;
+				endif;
 			}
 			//var_dump($result); exit;
 			return $result;

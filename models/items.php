@@ -37,7 +37,7 @@ class ToolsModelItems extends JModelList
 				'catid', 'a.`catid`',
 				'title', 'a.`title`',
 				'alias', 'a.`alias`',
-				'description', 'a.`description`',
+				//'description', 'a.`description`',
 				'image', 'a.`image`',
 				'document', 'a.`document`',
 				'type', 'a.`type`',

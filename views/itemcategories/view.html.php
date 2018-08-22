@@ -151,7 +151,8 @@ class ToolsViewItemCategories extends JViewLegacy
 		return array(
 			'a.`id`' => JText::_('JGRID_HEADING_ID'),
 			'a.`title`' => JText::_('COM_TOOLS_ITEMS_TITLE'),
-			'a.`description`' => JText::_('COM_TOOLS_ITEMS_DESCRIPTION'),
+			//'a.`description`' => JText::_('COM_TOOLS_ITEMS_DESCRIPTION'),
+			'a.`emails`' => JText::_('E-mails'),
 			'a.`type`' => JText::_('COM_TOOLS_ITEMS_TYPE'),
 			'a.`ordering`' => JText::_('JGRID_HEADING_ORDERING'),
 			'a.`state`' => JText::_('JSTATUS'),
