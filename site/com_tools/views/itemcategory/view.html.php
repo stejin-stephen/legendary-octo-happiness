@@ -42,9 +42,19 @@ class ToolsViewItemCategory extends JViewLegacy
 	{
 		$app  = JFactory::getApplication();
 		$user = JFactory::getUser();
+		
+		// get logged in item id from session
+		$session = JFactory::getSession();
+		$allowed_ids = $session->get('allowed_ids');
 
 		$this->state  = $this->get('State');
 		$this->item   = $this->get('Item');
+		
+		if($this->item->id != $allowed_ids) {
+			$app->enqueueMessage('Please login.', 'error');
+			$app->redirect(JRoute::_('index.php'));
+		}
+		
 		$this->params = $app->getParams('com_tools');
 
 		$this->item->tools = self::getTools($this->item->id);
@@ -88,7 +98,7 @@ class ToolsViewItemCategory extends JViewLegacy
 			->select('a.*')
 			->from($db->quoteName('#__tools_categories', 'a'))
 			->where('a.parent_id = '.$id)
-			->order('a.id DESC');
+			->order('a.ordering');
 
 		$db->setQuery($query);
 
@@ -110,7 +120,7 @@ class ToolsViewItemCategory extends JViewLegacy
 				->select('a.*')
 				->from($db->quoteName('#__tools', 'a'))
 				->where('a.tool_catid = '.$id)
-				->order('a.id DESC');
+				->order('a.ordering');
 
 			$db->setQuery($query);
 

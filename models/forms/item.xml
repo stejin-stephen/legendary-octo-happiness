@@ -63,7 +63,7 @@
         label="COM_TOOLS_FORM_LBL_ITEM_DESCRIPTION"
         description="COM_TOOLS_FORM_DESC_ITEM_DESCRIPTION"
         hint="COM_TOOLS_FORM_LBL_ITEM_DESCRIPTION"
-        hide="attachments"
+        hide="attachments,article"
     />
     
     <field
@@ -197,10 +197,16 @@
 				type="media"
 				preview="tooltip"
 				label="Image"/>
-			<field name="alt"
+        <field
+  				name="image_thumb"
+                  required="true"
+  				type="media"
+  				preview="tooltip"
+  				label="COM_TOOLS_FORM_THUMB"/>
+			<!--<field name="alt"
 				type="text"
 				label="Alt Text"
-				size="30"/>
+				size="30"/>-->
 		</fieldset>
 	</fields>
     

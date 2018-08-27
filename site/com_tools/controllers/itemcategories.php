@@ -46,19 +46,22 @@ class ToolsControllerItemCategories extends ToolsController
 
 		// Create a new query object.
 		$query = $db->getQuery(true);
-		$query->select('emails');
-		$query->from($db->quoteName('#__tools_categories'));
-		$query->where('emails LIKE ' . $db->quote('%' . $db->escape($email, true) . '%'));
-		$query->where('password = ' . $paswd);
-		$query->where('id = ' . $tool);
-
+		$query->select('id')
+			  ->from($db->quoteName('#__tools_categories'))
+			  ->where('password = ' . $paswd)
+			  ->where('id = ' . $tool);
+		
+		if($email) {
+			$query->where('emails LIKE ' . $db->quote('%' . $db->escape($email, true) . '%'));
+		}
+		
 		$db->setQuery($query);
 		$row = $db->loadRow();
 
 		if($row) {
-			$allowed_ids = $session->get('allowed_ids') ? $session->get('allowed_ids') : array();
-			$session->set('logged_in', $email);
-			array_push($allowed_ids, $tool);
+			$allowed_ids = $session->get('allowed_ids') ? $session->get('allowed_ids') : $tool;
+			$session->set('logged_in', $paswd);
+			// array_push($allowed_ids, $tool);
 			$session->set('allowed_ids', $allowed_ids);
 			echo $tool;
 		}
@@ -72,7 +75,8 @@ class ToolsControllerItemCategories extends ToolsController
 		$logged_in = $session->get('logged_in');
 		$allowed_ids = $session->get('allowed_ids');
 
-		if($logged_in && in_array($tool, $allowed_ids)) {
+		//if($logged_in && in_array($tool, $allowed_ids)) {
+		if($logged_in) {
 		$db = JFactory::getDbo();
 		//ordering
 		$db->setQuery("SELECT max(ordering) as max_order FROM #__tools_log");

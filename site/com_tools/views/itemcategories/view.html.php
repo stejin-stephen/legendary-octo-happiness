@@ -60,6 +60,10 @@ class ToolsViewItemCategories extends JViewLegacy
 			//$item->link = '<a class="pdf" onclick="document.getElementById(\'loginModal\').style.display=\'block\'" href="#inner_page">See more</a>';
 			$item->link = '<a class="pdf" id="tool_'.$item->id.'" href="#inner_page">See more</a>';
 		}
+		
+		$session = JFactory::getSession();
+		$session->set('logged_in', null);
+		$session->set('allowed_ids', null);
 
 		// Check for errors.
 		if (count($errors = $this->get('Errors')))

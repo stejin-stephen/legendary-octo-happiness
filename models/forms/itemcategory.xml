@@ -59,7 +59,7 @@
         label="COM_TOOLS_FORM_LBL_ITEM_DESCRIPTION"
         description="COM_TOOLS_FORM_DESC_ITEM_DESCRIPTION"
         hint="COM_TOOLS_FORM_LBL_ITEM_DESCRIPTION"
-        hide="attachments"
+        hide="attachments,article"
     />
 
     <field name="ordering"/>
@@ -68,7 +68,6 @@
         name="password"
         filter="safehtml"
         type="text"
-        required="true"
         label="Password"
         class="inputbox"
     />
@@ -172,7 +171,6 @@
 		>
 			<field
 				name="image"
-                required="true"
 				type="media"
 				preview="tooltip"
 				label="Image"/>
@@ -181,7 +179,7 @@
                   required="true"
   				type="media"
   				preview="tooltip"
-  				label="Thumb Image (Size: 100 x 80)"/>
+  				label="COM_TOOLS_FORM_THUMB"/>
 			<!-- <field name="alt"
 				type="text"
 				label="Alt Text"

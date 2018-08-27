@@ -162,34 +162,29 @@ JHtml::_('behavior.keepalive');
 </form><script>
 	jQuery(document).ready(function ($){	
 		$("#jform_catid_chzn").parent().parent().hide(); // Hide category
+		jQuery("#jform_type").trigger('change');
 		<?php
 		echo ($this->item->type == 2) ?
 		'jQuery("#jform_imageinfo_url").parent().parent().show();' :
 		'jQuery("#jform_imageinfo_url").parent().parent().hide();';
-		
-		echo ($this->item->type == 1 || $this->item->type == 2) ?
-		'jQuery(".btn-info").hide();' :
-		'jQuery(".btn-info").show();'; ?>
+		?>
 	});
 	
 	jQuery("#jform_type").change(function() {
 		if(this.value == 2) {
-			jQuery(".btn-info").hide();
-			jQuery("#docAttach").fadeIn();
+			jQuery("[href='#Downloads']").hide();
 			jQuery("#jform_imageinfo_url").prop('required',true);
-			jQuery("#jform_imageinfo_url").parent().parent().fadeIn();
+			jQuery("#jform_imageinfo_url").parent().parent().show();
 		} else if(this.value == 3) {
-			jQuery(".btn-info").show();
-			jQuery("#docAttach").fadeOut();
+			jQuery("[href='#Downloads']").show();
 			jQuery("#jform_imageinfo_url").val('');
 			jQuery("#jform_imageinfo_url").prop('required', false);
-			jQuery("#jform_imageinfo_url").parent().parent().fadeOut();
+			jQuery("#jform_imageinfo_url").parent().parent().hide();
 		} else {
-			jQuery(".btn-info").hide();
-			jQuery("#docAttach").fadeIn();
+			jQuery("[href='#Downloads']").hide();
 			jQuery("#jform_imageinfo_url").val('');
 			jQuery("#jform_imageinfo_url").prop('required', false);
-			jQuery("#jform_imageinfo_url").parent().parent().fadeOut();
+			jQuery("#jform_imageinfo_url").parent().parent().hide();
 		}
 	});
 	
