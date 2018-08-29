@@ -69,7 +69,6 @@ class ToolsControllerSettings extends JControllerAdmin
 			$msg = JText::_( 'Error. Unable to save data.' );
 		}
 
-
 		$link = 'index.php?option=com_tools&view=settings';
 		$this->setRedirect($link, $msg);
 	}

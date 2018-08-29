@@ -1,8 +1,8 @@
 <?php
 /**
- * @version    CVS: 1.0
+ * @version    1.0
  * @package    Com_Tools
- * @author      <>
+ * @author      <https://development.karakas.be/issues/5184>
  * @copyright  2018
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
@@ -17,8 +17,7 @@ JHtml::_('formbehavior.chosen', 'select');
 // Load admin language file
 $lang = JFactory::getLanguage();
 $lang->load('com_tools', JPATH_SITE);
-$doc = JFactory::getDocument();
-$doc->addScript(JUri::base() . '/media/com_tools/js/form.js');
+
 
 $user    = JFactory::getUser();
 $canEdit = ToolsHelpersTools::canUserEdit($this->item, $user);

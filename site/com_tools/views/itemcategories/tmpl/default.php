@@ -10,6 +10,7 @@
 defined('_JEXEC') or die;
 
 //$my_page_title = $this->escape($this->params->get('page_title'));
+
 $my_page_title = $this->escape($this->settings->title);
 $page_title_parts = explode(" ", $my_page_title, 2);
 

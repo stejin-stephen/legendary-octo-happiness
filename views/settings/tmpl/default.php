@@ -39,11 +39,6 @@ $item = $this->settings[0];
 <?php else : ?>
 	<div id="j-main-container">
 <?php endif;?>
-		<?php /*if (empty($this->settings)) : ?>
-			<div class="alert alert-no-items">
-				<?php echo JText::_('JGLOBAL_NO_MATCHING_RESULTS'); ?>
-			</div>
-		<?php else :*/ ?>
 		<div class="">
 
 			<table class="table table-striped component-settings" id="ItemList">

@@ -1,9 +1,9 @@
 <?php
 
 /**
- * @version    CVS: 1.0
+ * @version    1.0
  * @package    Com_Tools
- * @author      <>
+ * @author      <https://development.karakas.be/issues/5184>
  * @copyright  2018
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
@@ -41,6 +41,9 @@ class ToolsViewItemCategories extends JViewLegacy
 	public function display($tpl = null)
 	{
 		$app = JFactory::getApplication();
+		if(!$_REQUEST['Itemid']) {
+			$app->redirect(JRoute::_('index.php?Itemid=217')); // redirect to menu item id
+		}
 
 		$this->state = $this->get('State');
 		$this->items = $this->get('Items');
@@ -55,21 +58,20 @@ class ToolsViewItemCategories extends JViewLegacy
 		// Prepare the data.
 		foreach ($this->items as $item){
 			$item->cat = json_decode($item->image);
-			$item->introtext = truncateHelper::truncate($item->description,100,array('html' => true,'exact' => false, 'ending' => '...'));
+			//$item->introtext = truncateHelper::truncate($item->description,100,array('html' => true,'exact' => false, 'ending' => '...'));
+			$item->introtext = $item->description;
 			//$item->link = JRoute::_('index.php?option=com_tools&view=itemcategory&id='.(int) $item->id);
 			//$item->link = '<a class="pdf" onclick="document.getElementById(\'loginModal\').style.display=\'block\'" href="#inner_page">See more</a>';
 			$item->link = '<a class="pdf" id="tool_'.$item->id.'" href="#inner_page">See more</a>';
 		}
-		
-		$session = JFactory::getSession();
-		$session->set('logged_in', null);
-		$session->set('allowed_ids', null);
 
 		// Check for errors.
 		if (count($errors = $this->get('Errors')))
 		{
 			throw new Exception(implode("\n", $errors));
 		}
+		$session = JFactory::getSession();
+		$session->set('allowed_ids', null);
 
 		$this->_prepareDocument();
 		parent::display($tpl);

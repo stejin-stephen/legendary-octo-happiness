@@ -59,7 +59,7 @@
         label="COM_TOOLS_FORM_LBL_ITEM_DESCRIPTION"
         description="COM_TOOLS_FORM_DESC_ITEM_DESCRIPTION"
         hint="COM_TOOLS_FORM_LBL_ITEM_DESCRIPTION"
-        hide="attachments,article"
+        hide="attachments,article,image,pagebreak,readmore"
     />
 
     <field name="ordering"/>
@@ -176,7 +176,7 @@
 				label="Image"/>
         <field
   				name="image_thumb"
-                  required="true"
+                required="true"
   				type="media"
   				preview="tooltip"
   				label="COM_TOOLS_FORM_THUMB"/>

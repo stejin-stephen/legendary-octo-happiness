@@ -26,9 +26,10 @@ class JFormFieldCat extends JFormField {
 		$query 		= $db->getQuery(true);
 		$query->select('a.tool_catid')
 			->from('#__tools a')
-			->where('a.id='.$item_id);
+			->where('a.id='.$item_id)
+			->where('a.state=1');
 		$db->setQuery($query);
-
+		
 		$result =$db->loadObject();
 
 		//To get selected category list
@@ -36,7 +37,8 @@ class JFormFieldCat extends JFormField {
 		$query->select('c.id, c.title')
 			->from('#__tools_categories c')
 			->order('id')
-			->where('parent_id=0');
+			->where('parent_id=0')
+			->where('state=1');
 
 		$db->setQuery($query);
 
@@ -47,11 +49,12 @@ class JFormFieldCat extends JFormField {
 $category_select.='<option value="">- Select -</option>';
 			if(count($categories)>0){
 				foreach($categories as $category){
+					$subcat = self::getSubItems($category->id);
+					$disable = $subcat ? 'disabled="disabled"' : '';
 					if($category->id==$result->tool_catid){
 						$category_select.='<option value="'.$category->id.'" selected="selected" >'.$category->title.'</option>';
 					}else{
-						$category_select.='<option value="'.$category->id.'">'.$category->title.'</option>';
-              $subcat = self::getSubItems($category->id);
+						$category_select.='<option value="'.$category->id.'" '.$disable.'>'.$category->title.'</option>';
               foreach ($subcat as $itemcat) {
         					if($itemcat->id==$result->tool_catid){
         						$category_select.='<option value="'.$itemcat->id.'" selected="selected" >&emsp;'.$itemcat->title.'</option>';
@@ -76,7 +79,8 @@ $category_select.='<option value="">- Select -</option>';
   		$query->select('c.id, c.title')
   			->from('#__tools_categories c')
   			->order('id')
-  			->where('parent_id = '.$id);
+  			->where('parent_id = '.$id)
+			->where('state=1');
 
   		$db->setQuery($query);
 

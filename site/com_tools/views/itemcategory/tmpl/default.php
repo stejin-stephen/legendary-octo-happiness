@@ -33,7 +33,7 @@ if (!$canEdit && JFactory::getUser()->authorise('core.edit.own', 'com_tools' . $
 		</div>
 	<div class="intro"><?php echo $this->item->description; ?><br /></div>
 	</div>
-	<?php //echo $this->loadTemplate('items');
+	<?php echo $this->loadTemplate('items');
 
 foreach($this->item->subitems as $sub): ?>
 
@@ -65,10 +65,11 @@ foreach($this->item->subitems as $sub): ?>
                         </li>
                         <li class="list c6 nomargin">
                             <dl>
-                                <dt><img alt="Preview" name="mem_image" src="<?php echo $item->cat->image_thumb; ?>"></dt>
+                                <dt><img alt="Preview" name="mem_image" src="<?= $item->cat->image_thumb; ?>"></dt>
                                 <dd>
                                     <p><?php echo $item->introtext; ?></p>
-                                    <span class="dwn gallery"><a class="pdf" <?= $item->type !=3 ? "rel='prettyPhoto'" : '' ;?> href="<?php echo $item->link; ?>"><?php echo $item->showtext; ?></a></span>
+									<span class="dwn gallery"><a class="pdf" href="<?php echo $item->link; ?>" <?= $item->type !=2 ? "download" : "rel='prettyPhoto'" ;?>><?php echo $item->showtext; ?></a></span>
+                                    <!--<span class="dwn gallery"><a class="pdf" <?= $item->type !=3 ? "rel='prettyPhoto'" : '' ;?> href="<?php echo $item->link; ?>"><?php echo $item->showtext; ?></a></span>-->
                                 </dd>
                             </dl>
                         </li>

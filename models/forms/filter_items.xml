@@ -39,9 +39,9 @@
             <option value="a.`title` ASC">Title Ascending</option>
             <option value="a.`title` DESC">Title Descending</option>
             <!--<option value="a.`description` ASC">Description Ascending</option>
-            <option value="a.`description` DESC">Description Descending</option>-->
+            <option value="a.`description` DESC">Description Descending</option>
             <option value="a.`created` ASC">Date Ascending</option>
-            <option value="a.`created` DESC">Date Descending</option>
+            <option value="a.`created` DESC">Date Descending</option>-->
             <option value="a.`type` ASC">Type Ascending</option>
             <option value="a.`type` DESC">Type Descending</option>
             <option value="a.`ordering` ASC">Order Ascending</option>

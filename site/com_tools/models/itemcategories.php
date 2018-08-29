@@ -108,8 +108,8 @@ class ToolsModelItemCategories extends JModelList
                 $limit = $app->get('list_limit', 0);
             }
 
-            $this->setState('list.limit', $limit);
-            $this->setState('list.start', $start);
+            // $this->setState('list.limit', $limit);
+            // $this->setState('list.start', $start);
 	}
 
 	/**

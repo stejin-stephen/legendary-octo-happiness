@@ -35,7 +35,7 @@ $listDirn   = $this->state->get('list.direction');
                         </li>
                         <li class="list c6 nomargin">
                             <dl>
-                                <dt><img alt="Preview" name="mem_image" src="<?php echo $item->cat->image_thumb; ?>"></dt>
+                                <dt><img alt="Preview" name="mem_image" src="<?= $item->cat->image_thumb; ?>"></dt>
                                 <dd>
                                     <?php echo $item->introtext; ?>
                                     <span class="dwn">
@@ -113,11 +113,10 @@ $("#loginForm").on('submit', function(e){
 		url : 'index.php?option=com_tools&task=itemcategories.userLogin',
 		data : $('#loginForm').serialize(),
 		success: function(resp) {
-			//if(resp) $('#tool_'+resp).trigger("click");
-			if(resp) {
+			if(resp) {//$('#tool_'+resp).trigger("click");
 				var ajaxcall = "index.php?option=com_tools&task=itemcategories.saveLog&toolId="+resp;
-				jQuery.post(ajaxcall,function(data){
-					window.location.href = data;
+				jQuery.post(ajaxcall,function(res){
+					window.location.href = res;
 				});
 			}
 			else alert('Sorry, Invalid Username / Password');
@@ -129,9 +128,10 @@ $('[id^=tool]').click(function(){
 	var tool = this.id.split("_");
 //	var ajaxcall = "index.php?option=com_tools&task=itemcategories.saveLog&toolId="+tool[1];
 //	jQuery.post(ajaxcall,function(resp){
-//  if(resp) window.location.href = resp;else
-   modal.style.display='block';
+//  if(resp) window.location.href = resp;
+//  else
+  modal.style.display='block';
 		$('#tool_id').val(tool[1]);
-//	});
+	//});
 });
 </script>

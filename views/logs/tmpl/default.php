@@ -113,6 +113,9 @@ $sortFields = $this->getSortFields();
 				<th class='left'>
 				<?php echo JHtml::_('searchtools.sort',  'E-Mail', 'a.`email`', $listDirn, $listOrder); ?>
 				</th>
+				<th class='left'>
+				<?php echo JHtml::_('searchtools.sort',  'Date', 'a.`created`', $listDirn, $listOrder); ?>
+				</th>
 
 					<?php if (isset($this->items[0]->state)): ?>
 						<th width="1%" class="nowrap center">
@@ -168,7 +171,10 @@ $sortFields = $this->getSortFields();
 
 				</td>				<td>
 
-					<?php echo $item->email; ?>
+					<?php if (!filter_var($item->email, FILTER_VALIDATE_EMAIL)) echo 'NO EMAIL'; else ECHO $item->email; ?>
+				</td><td>
+
+					<?php echo $item->created; ?>
 				</td>
 						<?php if (isset($this->items[0]->state)): ?>
 							<td class="center">

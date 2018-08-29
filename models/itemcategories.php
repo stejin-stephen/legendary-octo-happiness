@@ -291,8 +291,7 @@ class ToolsModelItemCategories extends JModelList
 		$query = $db->getQuery(true);
 
 		$query->select('a.*');
-		$query->from('#__tools_categories as a');
-		$query->where("parent_id = ".$id);
+		$query->from('#__tools_categories as a')->where("parent_id = ".$id);
 
     // Add the list ordering clause.
     $orderCol  = $this->state->get('list.ordering', "a.id");

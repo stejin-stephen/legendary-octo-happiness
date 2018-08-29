@@ -33,6 +33,8 @@
             <option value="a.`tool_catid` DESC">Category Descending</option>
             <option value="a.`email` ASC">Email Ascending</option>
             <option value="a.`email` DESC">Email Descending</option>
+            <option value="a.`created` ASC">Date Ascending</option>
+            <option value="a.`created` DESC">Date Descending</option>
             <option value="a.`ordering` ASC">Order Ascending</option>
             <option value="a.`ordering` DESC">Order Descending</option>
             <option value="a.`state` ASC">State Ascending</option>

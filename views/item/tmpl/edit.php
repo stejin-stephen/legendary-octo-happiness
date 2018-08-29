@@ -175,16 +175,19 @@ JHtml::_('behavior.keepalive');
 			jQuery("[href='#Downloads']").hide();
 			jQuery("#jform_imageinfo_url").prop('required',true);
 			jQuery("#jform_imageinfo_url").parent().parent().show();
+			jQuery("#jform_imageinfo_image").parent().parent().parent().hide();
 		} else if(this.value == 3) {
 			jQuery("[href='#Downloads']").show();
 			jQuery("#jform_imageinfo_url").val('');
 			jQuery("#jform_imageinfo_url").prop('required', false);
 			jQuery("#jform_imageinfo_url").parent().parent().hide();
+			jQuery("#jform_imageinfo_image").parent().parent().parent().hide();
 		} else {
 			jQuery("[href='#Downloads']").hide();
 			jQuery("#jform_imageinfo_url").val('');
 			jQuery("#jform_imageinfo_url").prop('required', false);
 			jQuery("#jform_imageinfo_url").parent().parent().hide();
+			jQuery("#jform_imageinfo_image").parent().parent().parent().show();
 		}
 	});
 	

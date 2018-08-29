@@ -52,7 +52,7 @@ class ToolsViewItemCategory extends JViewLegacy
 		
 		if($this->item->id != $allowed_ids) {
 			$app->enqueueMessage('Please login.', 'error');
-			$app->redirect(JRoute::_('index.php'));
+			$app->redirect(JRoute::_('index.php?Itemid=217')); // redirect to menu item id
 		}
 		
 		$this->params = $app->getParams('com_tools');
@@ -98,6 +98,7 @@ class ToolsViewItemCategory extends JViewLegacy
 			->select('a.*')
 			->from($db->quoteName('#__tools_categories', 'a'))
 			->where('a.parent_id = '.$id)
+			->where('a.state = 1')
 			->order('a.ordering');
 
 		$db->setQuery($query);
@@ -120,6 +121,7 @@ class ToolsViewItemCategory extends JViewLegacy
 				->select('a.*')
 				->from($db->quoteName('#__tools', 'a'))
 				->where('a.tool_catid = '.$id)
+			->where('a.state = 1')
 				->order('a.ordering');
 
 			$db->setQuery($query);
@@ -128,8 +130,9 @@ class ToolsViewItemCategory extends JViewLegacy
 
 			foreach ($result as $item) {
 				$item->cat = json_decode($item->image);
-				$item->introtext = truncateHelper::truncate($item->description,100,array('html' => true,'exact' => false, 'ending' => '...'));
-				$item->showtext = $item->type == 3 ? 'Download' : 'View';
+				//$item->introtext = truncateHelper::truncate($item->description,100,array('html' => true,'exact' => false, 'ending' => '...'));
+				$item->introtext = $item->description;
+				$item->showtext = $item->type == 2 ? 'View' : 'Download';
 				
 				if($item->type == 3):
 					$item->link = self::getDownload($item);

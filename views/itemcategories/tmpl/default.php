@@ -172,10 +172,7 @@ $sortFields = $this->getSortFields();
 				</td>		<td>
 
 					<?php echo $item->emails; ?>
-				</td>			<!--<td>
-
-					<?php echo $item->description; ?>
-				</td>-->
+				</td>			
 						<?php if (isset($this->items[0]->state)): ?>
 							<td class="center">
 								<?php echo JHtml::_('jgrid.published', $item->state, $i, 'itemcategories.', $canChange, 'cb'); ?>
