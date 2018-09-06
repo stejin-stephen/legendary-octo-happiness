@@ -68,8 +68,9 @@ foreach($this->item->subitems as $sub): ?>
                                 <dt><img alt="Preview" name="mem_image" src="<?= $item->cat->image_thumb; ?>"></dt>
                                 <dd>
                                     <p><?php echo $item->introtext; ?></p>
-									<span class="dwn gallery"><a class="pdf" href="<?php echo $item->link; ?>" <?= $item->type !=2 ? "download" : "rel='prettyPhoto'" ;?>><?php echo $item->showtext; ?></a></span>
-                                    <!--<span class="dwn gallery"><a class="pdf" <?= $item->type !=3 ? "rel='prettyPhoto'" : '' ;?> href="<?php echo $item->link; ?>"><?php echo $item->showtext; ?></a></span>-->
+									<span class="dwn gallery"><a class="pdf" href="<?php echo $item->link; ?>" <?= $item->type !=2 ? "download" : "target='_blank'" ;?>><?php echo $item->showtext; ?></a></span>
+									<!--<span class="dwn gallery"><a class="pdf" href="<?php echo $item->link; ?>" <?= $item->type !=2 ? "download" : "rel='prettyPhoto'" ;?>><?php echo $item->showtext; ?></a></span>
+                                    <span class="dwn gallery"><a class="pdf" <?= $item->type !=3 ? "rel='prettyPhoto'" : '' ;?> href="<?php echo $item->link; ?>"><?php echo $item->showtext; ?></a></span>-->
                                 </dd>
                             </dl>
                         </li>

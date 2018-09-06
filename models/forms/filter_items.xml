@@ -13,7 +13,9 @@
         >
             <option value="">JOPTION_SELECT_PUBLISHED</option>
         </field>
-
+        
+        <field addfieldpath="/administrator/components/com_tools/models/filters" name="menus" type="menus" label="Select category" description="Select assigned category"></field>
+        
         <field name="type" label="COM_TOOLS_FORM_LBL_ITEM_TYPE" type="list" onchange="this.form.submit();" default="COM_TOOLS_ITEMS_TYPE_FILTER">
   <option value="">COM_TOOLS_ITEMS_TYPE_FILTER</option>
   <option value="1">COM_TOOLS_ITEMS_TYPE_OPTION_1</option>

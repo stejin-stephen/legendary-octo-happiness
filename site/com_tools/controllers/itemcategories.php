@@ -44,13 +44,14 @@ class ToolsControllerItemCategories extends ToolsController
 		$tool = JRequest::getVar('tool_id');
 		$paswd = $db->quote(JRequest::getVar('password'));
 
+		a:
 		// Create a new query object.
 		$query = $db->getQuery(true);
 		$query->select('alias')->from($db->quoteName('#__tools_categories'))
 			  ->where('password = ' . $paswd)
 			  ->where('id = ' . $tool);
 		
-		if($email) {
+		if(!empty($email) && empty($flag)) {
 			$query->where('emails LIKE ' . $db->quote('%' . $db->escape($email, true) . '%'));
 		}
 		
@@ -64,6 +65,8 @@ class ToolsControllerItemCategories extends ToolsController
 			//array_push($allowed_ids, $tool);
 			$session->set('allowed_ids', $allowed_ids);
 			echo $tool;
+		} else {
+			if(!$flag) { $flag = 1; goto a; }
 		}
 		exit;
 	}

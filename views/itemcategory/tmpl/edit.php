@@ -70,7 +70,7 @@ JHtml::_('behavior.keepalive');
 			<div class="form-vertical">	
 				<?php echo $this->form->renderField('description'); ?>
 			</div>
-			
+			<div id="bottomDiv">
             <div id="image-info">
                     <?php echo $this->form->renderFieldset('image-info');  ?>
             </div>
@@ -80,6 +80,7 @@ JHtml::_('behavior.keepalive');
 			<div class="form-vertical">	
 			<?php echo $this->form->renderField('emails');  ?>
 </div>
+			</div>
 				<input type="hidden" name="jform[ordering]" value="<?php echo $this->item->ordering; ?>" />
 				<input type="hidden" name="jform[state]" value="<?php echo $this->item->state; ?>" />
 
@@ -106,3 +107,14 @@ JHtml::_('behavior.keepalive');
 
 	</div>
 </form>
+<script>
+	jQuery(document).ready(function ($){
+		jQuery("#jform_parent_id").trigger('change');
+	});
+	jQuery("#jform_parent_id").change(function() {
+		if(this.value != 0) 
+		jQuery("#bottomDiv").hide();
+		else
+		jQuery("#bottomDiv").show();
+	});
+	</script>

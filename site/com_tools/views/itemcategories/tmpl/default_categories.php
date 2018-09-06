@@ -73,38 +73,35 @@ $listDirn   = $this->state->get('list.direction');
 
     <div class="container">
       <label><strong>E-mail</strong></label>
-      <input type="text" placeholder="Enter E-mail" name="email" >
+      <input type="text" placeholder="Enter your e-mail" name="email" >
 
       <label><strong>Password</strong></label>
-      <input type="password" placeholder="Enter Password" name="password" required>
+      <input type="password" placeholder="Enter password" name="password" required>
       <input type="hidden" name="tool_id" id="tool_id" value="" required>
-
-      <button name="submit_bt" src="templates/gbd_inner/images/green_by_design_send_bt.gif" id="send-bt" class="atag_btn_sprites submit_btn button push"></button>
-      <label>
+ 		<label>
         <input type="checkbox" required><label>I agree to <a href="disclaimer.html" target="_blank">privacy policy</a></label>
       </label>
+      <button name="submit_bt" src="templates/gbd_inner/images/green_by_design_send_bt.gif" id="send-bt" class="atag_btn_sprites submit_btn button push"></button>
+     
     </div>
 
   </form>
 </div>
 
-<style>
-.close:focus,.close:hover,button{cursor:pointer}input[type=password],input[type=text]
-{width:100%;padding:12px 20px;margin:8px 0;display:inline-block;border:1px solid #ccc;box-sizing:border-box}
-button{background-color:#4CAF50;color:#fff;padding:14px 20px;margin:8px 0;border:none}button:hover{opacity:.8}
-.imgcontainer{text-align:center;margin:24px 0 12px;position:relative}.container{padding:16px}
-.modal{display:none;position:fixed;z-index:1;left:0;top:0;width:100%;height:100%;background-color:#000;background-color:rgba(0,0,0,.4)}
-.modal-content{background-color:#fefefe;margin:5% auto 15%;width:30%}.close{position:absolute;right:25px;font-size:35px}
-</style>
-
 <script>
 var modal = document.getElementById('loginModal');
 
-//window.onclick = function(event) {
-//    if (event.target == modal) {
-//        modal.style.display = "none";
-//    }
-//}
+window.onclick = function(event) {
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+}
+
+$(document).keyup(function(e) {
+     if (e.keyCode == 27) { // escape key maps to keycode `27`
+        modal.style.display = "none";
+    }
+});
 
 $("#loginForm").on('submit', function(e){
 	e.preventDefault();
@@ -119,7 +116,7 @@ $("#loginForm").on('submit', function(e){
 					window.location.href = res;
 				});
 			}
-			else alert('Sorry, Invalid Username / Password');
+			else alert('Sorry, Invalid E-mail / Password');
 		}
 	});
 });

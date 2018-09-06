@@ -176,7 +176,6 @@
 				label="Image"/>
         <field
   				name="image_thumb"
-                required="true"
   				type="media"
   				preview="tooltip"
   				label="COM_TOOLS_FORM_THUMB"/>

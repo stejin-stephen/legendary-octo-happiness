@@ -235,6 +235,13 @@ class ToolsModelItems extends JModelList
 			$query->where("a.`type` = '".$db->escape($filter_type)."'");
 		}
 		
+		// Filter by menuid.
+		$menuId = $this->getState('filter.menus');
+		if (is_numeric($menuId))
+		{
+			$query->where("a.`tool_catid` = '".$db->escape($menuId)."'");
+		}
+		
 		if(JRequest::getVar('tmpl')!='component'){
 			// Filter on the language.
 			$langsession 	= 	JFactory::getSession()->get('registry');

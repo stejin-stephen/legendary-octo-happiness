@@ -173,8 +173,8 @@ class ToolsModelItemCategories extends JModelList
 		}
 
             // Add the list ordering clause.
-            $orderCol  = $this->state->get('list.ordering', "a.id");
-            $orderDirn = $this->state->get('list.direction', "DESC");
+            $orderCol  = $this->state->get('list.ordering', "a.ordering");
+            $orderDirn = $this->state->get('list.direction', "ASC");
 
             if ($orderCol && $orderDirn)
             {

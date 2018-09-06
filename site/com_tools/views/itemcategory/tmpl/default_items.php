@@ -34,7 +34,8 @@ if($this->item->tools):
                                 <dd>
                                     <p><?php echo $item->introtext; ?></p>
                                     <span class="dwn gallery">
-                                      <a class="pdf" <?= $item->type !=2 ? "download" : "rel='prettyPhoto'" ;?> href="<?php echo $item->link; ?>"><?php echo $item->showtext; ?></a>
+                                      <a class="pdf" <?= $item->type !=2 ? "download" : "target='_blank'" ;?> href="<?php echo $item->link; ?>"><?php echo $item->showtext; ?></a>
+                                      <!--<a class="pdf" <?= $item->type !=2 ? "download" : "rel='prettyPhoto'" ;?> href="<?php echo $item->link; ?>"><?php echo $item->showtext; ?></a>-->
                                     </span>
                                 </dd>
                             </dl>

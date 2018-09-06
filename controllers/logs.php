@@ -121,7 +121,7 @@ class ToolsControllerLogs extends JControllerAdmin
 		foreach($results[0] as $key => $row){
 			$keys[] = $key;
 		}
-		$filename = 'Logs-'.date('Y_m_d_H_i_s').'.xlsx' ;
+		$filename = 'Tools-Logs-'.date('Y_m_d_H_i_s').'.xlsx' ;
 		
 		//load PHPExcel library
 		require_once(JPATH_ROOT. '/PHPExcel.php');
@@ -134,15 +134,23 @@ class ToolsControllerLogs extends JControllerAdmin
 			$objPHPExcel->setActiveSheetIndex(0)->setCellValue($letters[$i].'1', ucfirst($keys[$i-1]));
 		}
 		$k = 0;
+		//foreach($results as $row){
+		//	
+		//	for($j = 0;$j<count($keys);$j++) { $num = $k+2;
+		//		$objPHPExcel->setActiveSheetIndex(0)->setCellValue($letters[$j+1].$num, $results[$k]->$keys[$j]);
+		//	}
+		//	$objPHPExcel->setActiveSheetIndex(0)->setCellValue('A'.$num, $num-1);
+		//	$k++;
+		//}
+		$num = 2;$k = 0;
 		foreach($results as $row){
 			
-			for($j = 0;$j<count($keys);$j++) { $num = $k+2;
-				$objPHPExcel->setActiveSheetIndex(0)->setCellValue($letters[$j+1].$num, $results[$k]->$keys[$j]);
-			}
 			$objPHPExcel->setActiveSheetIndex(0)->setCellValue('A'.$num, $num-1);
-			$k++;
+			$objPHPExcel->setActiveSheetIndex(0)->setCellValue('B'.$num, $results[$k]->email);
+			$objPHPExcel->setActiveSheetIndex(0)->setCellValue('C'.$num, $results[$k]->category);
+			$objPHPExcel->setActiveSheetIndex(0)->setCellValue('D'.$num, $results[$k]->created);
+			$num++;$k++;
 		}
-
 		
 		header("Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
 		header('Content-Disposition: attachment;filename="' . $filename . '"');

@@ -92,7 +92,7 @@ class ToolsModelLogs extends JModelList
 
 		// List state information.
 		//parent::populateState('a.title', 'asc');
-		parent::populateState('a.email', 'asc');
+		parent::populateState('a.id', 'desc');
 	}
 
 	/**
@@ -244,7 +244,7 @@ class ToolsModelLogs extends JModelList
                 
 		// Add the list ordering clause.
 		$orderCol  = $this->state->get('list.ordering', "a.id");
-		$orderDirn = $this->state->get('list.direction', "ASC");
+		$orderDirn = $this->state->get('list.direction', "DESC");
 
 		if ($orderCol && $orderDirn)
 		{
