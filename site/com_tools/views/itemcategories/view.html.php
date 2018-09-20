@@ -60,9 +60,7 @@ class ToolsViewItemCategories extends JViewLegacy
 			$item->cat = json_decode($item->image);
 			//$item->introtext = truncateHelper::truncate($item->description,100,array('html' => true,'exact' => false, 'ending' => '...'));
 			$item->introtext = $item->description;
-			//$item->link = JRoute::_('index.php?option=com_tools&view=itemcategory&id='.(int) $item->id);
-			//$item->link = '<a class="pdf" onclick="document.getElementById(\'loginModal\').style.display=\'block\'" href="#inner_page">See more</a>';
-			$item->link = '<a class="pdf" id="tool_'.$item->id.'" href="#inner_page">See more</a>';
+			$item->link = '<a class="pdf" id="tool_'.$item->id.'" href="#inner_page">Access Pages (Password required)</a>';
 		}
 
 		// Check for errors.

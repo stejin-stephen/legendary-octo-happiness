@@ -158,9 +158,20 @@ class ToolsViewItemCategory extends JViewLegacy
 "WHERE ad.component = '{$component}' AND a.iid = {$id} AND a.cid = {$catid} AND a.did = ad.id ORDER BY ad.ordering ASC";
 
 $db->setQuery($query);
-$attachments = $db->loadObject();
+$attachments = $db->loadObjectList();
 
-return JRoute::_("index.php?option=com_attachments&view=attachments&id=" . $attachments->did);
+		if (count($attachments)){
+			foreach ($attachments as $attachment){
+			 $downloadURL = JRoute::_("index.php?option=com_attachments&view=attachments&id=" . $attachment->did);
+			 				$documentTitle = (!empty($attachment->title)) ? $attachment->title : $attachment->name;
+				
+				$downloads_title = $documentTitle;
+				if($attachment->did) {
+				$downloads[] = "<p><a class='pdf' href='{$downloadURL}' >{$downloads_title}</a></p>"; }
+			}
+		}//var_dump($downloads);
+
+return $downloads;
 	}
 
 	/**

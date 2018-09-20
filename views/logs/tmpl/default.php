@@ -171,7 +171,7 @@ $sortFields = $this->getSortFields();
 
 				</td>				<td>
 
-					<?php if (!filter_var($item->email, FILTER_VALIDATE_EMAIL)) echo 'NO EMAIL'; else ECHO $item->email; ?>
+					<?= $item->email; ?>
 				</td><td>
 
 					<?php echo $item->created; ?>

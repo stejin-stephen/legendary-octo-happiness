@@ -25,7 +25,7 @@ $listDirn   = $this->state->get('list.direction');
     <div class="listing column c0 nomargin">
         <div id="brochur_reports">
             <div id="listing_type1">
-                <div class="reports_listing_clm c11 nomargin column">
+                <div class="tools_listing c11 nomargin column">
 
                 <?php $i = 0; foreach ($this->items as $i => $item) : ?>
                     <ul class="column nomargin c6">
@@ -34,8 +34,8 @@ $listDirn   = $this->state->get('list.direction');
                             <h4 class="column"><?php echo $this->escape($item->title); ?></h4>
                         </li>
                         <li class="list c6 nomargin">
-                            <dl>
-                                <dt><img alt="Preview" name="mem_image" src="<?= $item->cat->image_thumb; ?>"></dt>
+                            <dl><?php if(file_exists($item->cat->image_thumb)) { ?>
+                                <dt><img alt="Preview" name="mem_image" src="<?= $item->cat->image_thumb; ?>"></dt><?php } ?>
                                 <dd>
                                     <?php echo $item->introtext; ?>
                                     <span class="dwn">
@@ -46,7 +46,7 @@ $listDirn   = $this->state->get('list.direction');
                             </dl>
                         </li>
                     </ul>
-                <?php echo $i%2 !=0 ? '</div><div class="reports_listing_clm c11 nomargin column">' : '';
+                <?php echo $i%2 !=0 ? '</div><div class="tools_listing c11 nomargin column">' : '';
                 $i++; endforeach; ?>
 
                 </div>
@@ -73,7 +73,7 @@ $listDirn   = $this->state->get('list.direction');
 
     <div class="container">
       <label><strong>E-mail</strong></label>
-      <input type="text" placeholder="Enter your e-mail" name="email" >
+      <input type="email" placeholder="Enter your e-mail" name="email" required>
 
       <label><strong>Password</strong></label>
       <input type="password" placeholder="Enter password" name="password" required>

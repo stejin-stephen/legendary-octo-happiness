@@ -23,13 +23,13 @@ if (count($page_title_parts)>0) {
 ?>
 
 
-<div id="publication" class="column">
-	<div class="column nomargin content rightpad">
+<!--<div id="publication" class="column">
+	<div class="column nomargin content">
 		<div class="title nomargin column">
 			<h3><?php echo $new_page_title; ?></h3>
 		</div>
 	<div class="intro"><?php echo str_replace("\'","'", $this->settings->introtext); ?><br /></div>
 	</div>
-</div>
+</div>-->
 
 <?php echo $this->loadTemplate('categories'); ?>

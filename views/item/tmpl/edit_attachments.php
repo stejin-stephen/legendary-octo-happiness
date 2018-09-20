@@ -48,6 +48,7 @@
 					currentSelection.html(data);
 				});
 				downloadlimitCheck('save');
+			jQuery( ".adminformlist").show();
 				return false;
 			});
 			
@@ -55,7 +56,7 @@
 				
 				var params = jQuery('#attachmentsContainer .topost').serializeArray();
 				jQuery.post('index.php?option=com_attachments&task=upload.savedoc', params, function(data){
-					jQuery('#attachmentsContainer ul.adminformlist li').remove();
+					//jQuery('#attachmentsContainer ul.adminformlist li').remove();
 					jQuery('#attachmentsContainer ul.adminformlist').append(data);
 					jQuery('.saveDocItems').hide();
 				});
@@ -119,7 +120,7 @@
 					});	
 				}
 				downloadlimitCheck('remove');
-				jQuery( ".btn-info").show();
+				//jQuery( ".btn-info").show();
 				return false;
 			});			
 			
@@ -190,7 +191,7 @@
 		});
 		function DatePickerReload(id){
 			jQuery( "#"+id,  window.parent.document ).parent().hide();
-			jQuery( ".btn-info").hide();
+			//jQuery( ".btn-info").hide();
 		}
 		
 		function downloadlimitCheck(dval){
@@ -222,7 +223,7 @@
 				<?php if($attachments) : ?>
 				<?php foreach($attachments as $attachment) : ?>
 				<li  id="ordering_<?php echo $attachment->docid; ?>">
-                	<span class="tooly">Click to Drag</span>
+                	<!--<span class="tooly">Click to Drag</span>-->
 					<div class="prof_pic">
 					  <img src="components/com_attachments/assets/images/icons/128/<?php echo $attachment->extension; ?>.png" width="128" height="128" />
 					  <!--<a href="#" class="editCover">edit cover</a> -->
@@ -257,11 +258,11 @@
 			<?php endforeach; ?>
 		</ul>
 		<?php else:?>
-		<!--<ul class="adminformlist">
+		<ul class="adminformlist">
 			<?php foreach($this->form->getFieldset('attachments') as $field): ?>
 				<li><?php //echo $field->label; ?><?php echo $field->input; ?></li>
 			<?php endforeach; ?>
-		</ul>-->
+		</ul>
 		<?php endif; ?>
 
 		<?php ////Download limit ?>

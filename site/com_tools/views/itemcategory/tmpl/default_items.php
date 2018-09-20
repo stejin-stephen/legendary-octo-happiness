@@ -20,7 +20,7 @@ if($this->item->tools):
     <div class="listing column c0 nomargin">
         <div id="brochur_reports">
             <div id="listing_type1">
-                <div class="reports_listing_clm c11 nomargin column">
+                <div class="reports_listing_clm c11 nomargin column n_tools">
 
                 <?php $i = 0; foreach ($this->item->tools as $i => $item) :?>
                     <ul class="column nomargin c6">
@@ -29,19 +29,24 @@ if($this->item->tools):
                             <h4 class="column"><?php echo $this->escape($item->title); ?></h4>
                         </li>
                         <li class="list c6 nomargin">
-                            <dl>
-                                <dt><img alt="Preview" name="mem_image" src="<?= $item->cat->image_thumb; ?>"></dt>
+                            <dl><?php if(file_exists($item->cat->image_thumb)) { ?>
+                                <dt><img alt="Preview" name="mem_image" src="<?= $item->cat->image_thumb; ?>"></dt><?php } ?>
                                 <dd>
                                     <p><?php echo $item->introtext; ?></p>
                                     <span class="dwn gallery">
+									<?php if($item->type == 3) { ?>
+													<?php foreach ($item->link as $download) : ?>
+					<?php echo $download;?>
+				<?php endforeach; ?>
+									<?php } else { ?>
                                       <a class="pdf" <?= $item->type !=2 ? "download" : "target='_blank'" ;?> href="<?php echo $item->link; ?>"><?php echo $item->showtext; ?></a>
-                                      <!--<a class="pdf" <?= $item->type !=2 ? "download" : "rel='prettyPhoto'" ;?> href="<?php echo $item->link; ?>"><?php echo $item->showtext; ?></a>-->
+                                    <?php } ?>
                                     </span>
                                 </dd>
                             </dl>
                         </li>
                     </ul>
-                <?php echo $i%2 !=0 ? '</div><div class="reports_listing_clm c11 nomargin column">' : '';
+                <?php echo $i%2 !=0 ? '</div><div class="reports_listing_clm c11 nomargin column n_tools">' : '';
                 $i++; endforeach; ?>
 
                 </div>

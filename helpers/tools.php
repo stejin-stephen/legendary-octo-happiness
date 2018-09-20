@@ -44,11 +44,11 @@ class ToolsHelper
 			$vName == 'itemcategories'
 		);
 
-		JHtmlSidebar::addEntry(
-			JText::_('SETTINGS'),
-			'index.php?option=com_tools&view=settings',
-			$vName == 'settings'
-		);
+		//JHtmlSidebar::addEntry(
+		//	JText::_('SETTINGS'),
+		//	'index.php?option=com_tools&view=settings',
+		//	$vName == 'settings'
+		//);
 
 		JHtmlSidebar::addEntry(
 			JText::_('LOGS'),

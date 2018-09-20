@@ -42,31 +42,36 @@ class ToolsControllerItemCategories extends ToolsController
 		$session = JFactory::getSession();
 		$email = JRequest::getVar('email');
 		$tool = JRequest::getVar('tool_id');
-		$paswd = $db->quote(JRequest::getVar('password'));
-
-		a:
+		$paswd = JRequest::getVar('password');
+		
 		// Create a new query object.
 		$query = $db->getQuery(true);
-		$query->select('alias')->from($db->quoteName('#__tools_categories'))
-			  ->where('password = ' . $paswd)
-			  ->where('id = ' . $tool);
+		$query->select('*')
+			->from($db->quoteName('#__tools_categories'))
+			->where('id = ' . $tool);
+		$db->setQuery($query);
+		$row = $db->loadAssoc();
 		
-		if(!empty($email) && empty($flag)) {
-			$query->where('emails LIKE ' . $db->quote('%' . $db->escape($email, true) . '%'));
+		$flag = false;
+		
+		if(!empty($row['emails']) &&
+		   preg_match('/\b'.$email.'\b/',$row['emails']) === 1 &&
+		   $paswd === $row['password']) {
+			//echo 'mail & password';
+			$flag = true;
+		} else if(!empty($row['emails']) && $paswd === $row['password']) {
+			//echo 'email another, password';
+			$flag = false;
+		} else if($paswd === $row['password']) {
+			//echo 'only password';
+			$flag = true;
 		}
 		
-		$db->setQuery($query);
-		$row = $db->loadRow();
-
-		if($row) {
-			//$allowed_ids = $session->get('allowed_ids') ? $session->get('allowed_ids') : array();
+		if($flag) {
 			$allowed_ids = $session->get('allowed_ids') ? $session->get('allowed_ids') : $tool;
 			$session->set('logged_in', $email);
-			//array_push($allowed_ids, $tool);
 			$session->set('allowed_ids', $allowed_ids);
 			echo $tool;
-		} else {
-			if(!$flag) { $flag = 1; goto a; }
 		}
 		exit;
 	}
